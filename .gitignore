@@ -13,3 +13,5 @@ build/
 # Miscellaneous files
 .env
 .DS_Store
+
+server/config/config.env

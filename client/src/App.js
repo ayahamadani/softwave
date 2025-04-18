@@ -1,7 +1,9 @@
 import './App.css';
 import { useEffect } from 'react';
-import Login from './components/Login';
-import Signup from "./components/Signup";
+import Home from './components/Home/Home';
+import Navbar from './components/Navbar/Navbar';
+import Login from './components/Login/Login';
+import Signup from "./components/Signup/Signup";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 function App() {
@@ -14,6 +16,7 @@ function App() {
     <Routes>
       <Route path="/" element={<Login />} />
       <Route path="/signup" element={<Signup />} />
+      <Route path="/home" element={<Home />} />
     </Routes>
   </Router>
   );

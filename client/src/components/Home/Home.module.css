@@ -1,0 +1,55 @@
+* {
+    padding: 0em;
+    margin: 0em;
+    box-sizing: border-box;
+}
+
+.navbarContainer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 10em;
+    
+}
+
+.leftNav {
+    display: flex;
+    align-items: center;
+}
+
+.leftNav input {
+    width: 25em;
+    height: 2em;
+    border-radius: 17px;
+    border: solid black 1px;
+    padding: 1.1em 1em;
+}
+
+.rightNav {
+    display: flex;
+    align-items: center;
+    gap: 2em;
+}
+
+.rightNav a {
+    margin-left: 1.5em;
+    text-decoration: none;
+    color: black;
+}
+ 
+.rightNav img {
+    width: 100%;
+    border-radius: 33px;
+    border: solid rgb(0, 0, 0) 5px;
+}
+
+.iconContainer {
+    width: 10em;
+    margin-right: 5em;
+    width: 4em;
+    
+}
+.iconContainer:hover {
+    cursor: pointer;
+    
+}

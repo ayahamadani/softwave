@@ -1,3 +1,9 @@
+* {
+    padding: 0em;
+    margin: 0em;
+    box-sizing: border-box;
+}
+
 .loginContainer {
     display: flex;
     flex-direction: column;
@@ -11,7 +17,7 @@
     display: flex;
     flex-direction: column;
     align-items: center; 
-    width: 25em;
+    width: 35em;
     gap: 2em; 
     padding: 2em;
     background: white;
@@ -39,7 +45,7 @@
     border-radius: 5px;
     color: white;
     font-size: 0.85em;
-    background-color: #ccc;
+    background-color: #1a0f0f;
     font-weight: 500px;
 }
 
@@ -49,6 +55,21 @@
     width: 100%;
     justify-content: flex-end;
 }
+
 .signUpOptionContainer a{
     margin-left: 0.2em;
+}
+
+.warningMessage {
+    font-size: 0.9em;
+    display: none;
+    color: rgb(155, 155, 155);
+}
+
+form {
+    width: 22em;
+}
+
+h1 {
+    padding: 2em;
 }

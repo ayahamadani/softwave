@@ -11,6 +11,6 @@ rootRouter.get("/", (req, res) => {
     res.json({"message": "I love freddy fazebear"});
 });
 
-rootRouter.use("/users", userRouter);
+rootRouter.use("/auth", userRouter);
 
 rootRouter.use("/songs", songRouter);
