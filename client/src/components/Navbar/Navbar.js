@@ -2,12 +2,17 @@ import React from 'react';
 import styles from "../Home/Home.module.css";
 import userIcon from "../assets/images/download.jpg";
 
-export default function Navbar() {
+export default function Navbar({ setSearchQuery }) {
+
+  const handleInputChange = (e) => {
+    setSearchQuery(e.target.value);
+  };
+
   return (
     <div className={styles.navbarContainer}>
       <div className={styles.leftNav}>
         <h1>Soundwave</h1>
-        <input type="text" placeholder='search for a song'/>
+        <input type="text" placeholder='search for a song' onChange={handleInputChange}/>
       </div>
 
       <div className={styles.rightNav}>

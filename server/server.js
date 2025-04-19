@@ -7,6 +7,7 @@ const path = require('path');
 const rootRouter = require('./routes');
 const multer = require("multer");
 const AWS = require("aws-sdk");
+// const songsRoute = require('./routes/songs');
 
 const PORT = process.env.PORT || 5000;
 
@@ -29,6 +30,7 @@ if (process.env.NODE_ENV === 'development') {
 
 // Mount routers
 app.use('/', rootRouter);
+// app.use('/', songsRoute);
 
 app.listen(PORT, console.log(`Server running in ${process.env.NODE_ENV} mode on port ${PORT}. http://localhost:${PORT}`));
 
@@ -42,6 +44,15 @@ const s3 = new AWS.S3({
     secretAccessKey: process.env.AWS_SECRET_KEY,
     region: process.env.AWS_REGION,
   });
+
+const params = {
+  Bucket: 'my-songs-bucket443181317692',
+  Key: 'song.mp3',
+  Expires: 60 // 60 seconds
+};
+
+const url = s3.getSignedUrl('getObject', params);
+console.log('Pre-signed URL:', url);
 
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
