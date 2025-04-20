@@ -38,7 +38,7 @@ export default function BottomPlayer() {
       };
 
     return (
-    <div className={styles.stickyBottom}>
+      <div className={styles.stickyBottom}>
         <div style={{display: "flex", gap: "0.7em"}}>
             <img src={currentSongData.albumCover} alt="currently-playing-song" style={{ width: "5em" }}/>
             <div style={{width: "6em"}} className={styles.white}>
@@ -67,6 +67,7 @@ export default function BottomPlayer() {
             </div>
         </div>
         <div style={{ paddingRight: "3em"}}>
+            <i className="fa-solid fa-plus" style={{color: "white", marginRight: "1em", cursor: "pointer"}}></i>
             <i style={{color: "white", cursor: "pointer"}} className={`fa-heart ${currentSongData.isLiked ? "fa-solid" : "fa-regular"}`} onClick={() => toggleLike(currentSongData)}></i>
         </div>
     </div>

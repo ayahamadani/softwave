@@ -12,6 +12,7 @@ import Navbar from './components/Navbar/Navbar';
 import AdminPanel from './pages/AdmingPanel/AdminPanel';
 import Profile from './pages/Profile/Profile';
 import BottomPlayer from './components/BottomPlayer/BottomPlayer';
+import ProtectedRoute from './components/ProtectedRoute';
 import { BrowserRouter as Router, Routes, Route, useLocation  } from "react-router-dom";
 
 function App() {
@@ -23,6 +24,12 @@ function App() {
   const location = useLocation();
   const [loading, setLoading] = useState(false);
   const navbarInput = document.querySelector("#navbarSearchInput");
+
+  // State to track if the current logged in user is an admin or not
+  const [user, setUser] = useState(() => {
+    const stored = localStorage.getItem("user");
+    return stored ? JSON.parse(stored) : null;
+  });
 
   // To hide the bottom player from both the login and signup pages
   const hidePlayer = location.pathname === "/" || location.pathname === "/signup";
@@ -204,7 +211,7 @@ function App() {
       setSearchQuery
     }}
   >
-    <Navbar setSearchQuery={setSearchQuery}/>
+    {!hidePlayer && <Navbar setSearchQuery={setSearchQuery}/>}
     {loading ? (
       <Loader />
     ) : (
@@ -214,13 +221,21 @@ function App() {
           <Route path="/signup" element={<Signup />} />
           <Route path="/home" element={<Home />} />
           <Route path="/profile" element={<Profile />} />
-          <Route path="/adminPanel" element={<AdminPanel />} />
+          <Route 
+            path="/adminPanel" 
+            element={
+              <ProtectedRoute user={user} adminOnly={true}>
+                {/* The children in this context is the AdminPanel component */}
+                <AdminPanel />
+              </ProtectedRoute>
+            } 
+          />
           <Route path="/likedSongs" element={<LikedSongs />} />
           <Route path="/playlists" element={<Playlists />} />
         </Routes>
       </>
     )}
-    {!hidePlayer && <BottomPlayer />}
+    {!hidePlayer && currentSongAudio && <BottomPlayer />}
   </SongContext.Provider>
 );
 
