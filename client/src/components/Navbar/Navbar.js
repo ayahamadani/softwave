@@ -1,6 +1,8 @@
 import React from 'react';
-import styles from "../Home/Home.module.css";
+import styles from '../../pages/Home/Home.module.css';
+import { Link } from 'react-router-dom';
 import userIcon from "../assets/images/download.jpg";
+import LikedSongs from '../../pages/LikedSongs';
 
 export default function Navbar({ setSearchQuery }) {
 
@@ -17,9 +19,9 @@ export default function Navbar({ setSearchQuery }) {
 
       <div className={styles.rightNav}>
         <div>
-          <a href="#">Home</a>
-          <a href="#">Liked Songs</a>
-          <a href="#">Playlists</a>
+          <Link to="/home">Home</Link>
+          <Link to="/likedSongs">Liked Songs</Link>
+          <Link to="/playlists">Playlists</Link>
         </div>
         <div className={styles.iconContainer}>
           <img src={userIcon} alt="user-icon" />

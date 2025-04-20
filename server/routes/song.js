@@ -41,6 +41,34 @@ songRouter.put("/:id/toggle-like", async (req, res) => {
   }
 });
 
+// GET /songs/liked/search?name=songname
+songRouter.get("/liked/search", async (req, res) => {
+  const songName = req.query.name;
+
+  try {
+    const likedSongs = await Song.find({
+      name: { $regex: songName, $options: "i" },
+      isLiked: true
+    });
+    res.json(likedSongs);
+  } catch (err) {
+    console.error("Error searching liked songs:", err);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+// GET /songs/liked
+songRouter.get("/liked", async (req, res) => {
+  try {
+    const likedSongs = await Song.find({ isLiked: true });
+    res.json(likedSongs);
+  } catch (err) {
+    console.error("Error fetching liked songs:", err);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+
 
 // songRouter.get('/:id', async (req, res) => {
 //     try {
