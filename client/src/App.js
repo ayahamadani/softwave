@@ -1,18 +1,45 @@
 import './App.css';
 import axios from 'axios';
-import { useEffect, useState, createContext } from 'react';
+import { useEffect, useState } from 'react';
 import SongContext from './components/context/SongContext';
 import Home from './pages/Home/Home';
 import Login from './pages/Login/Login';
 import Signup from './pages/Signup/Signup';
 import LikedSongs from './pages/LikedSongs';
 import Playlists from "./pages/Playlists";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Loader from './components/Loader/Loader';
+import Navbar from './components/Navbar/Navbar';
+import AdminPanel from './pages/AdmingPanel/AdminPanel';
+import Profile from './pages/Profile/Profile';
+import BottomPlayer from './components/BottomPlayer/BottomPlayer';
+import { BrowserRouter as Router, Routes, Route, useLocation  } from "react-router-dom";
 
 function App() {
   const [currentSongData, setCurrentSongData] = useState({});
   const [currentSongAudio, setCurrentSongAudio] = useState(null);
+  const [searchQuery, setSearchQuery] = useState("");
   const [songs, setSongs] = useState([]);
+
+  const location = useLocation();
+  const [loading, setLoading] = useState(false);
+  const navbarInput = document.querySelector("#navbarSearchInput");
+
+  // To hide the bottom player from both the login and signup pages
+  const hidePlayer = location.pathname === "/" || location.pathname === "/signup";
+
+  // useEffect that gets triggered when changing pages
+  useEffect(() => {
+    if (navbarInput) navbarInput.value = "";
+    setSearchQuery("");
+    setLoading(true);
+    setSongs([]);
+    
+    const timeout = setTimeout(() => {
+      setLoading(false);
+    }, 400);
+
+    return () => clearTimeout(timeout);
+  }, [location.pathname]);
 
   const playSong = (song) => {
     if (!song || !song.audio) {
@@ -138,20 +165,65 @@ function App() {
     }
   };
 
+  useEffect(() => {
+    const handleSongEnd = () => {
+      if (getSongIndex(currentSongData._id) === songs.length - 1) {
+        skipSong(currentSongData, false);
+      } else skipSong(currentSongData);
+    };
+
+    // Add event listener for the 'ended' event on the current audio element
+    if (currentSongAudio) {
+      currentSongAudio.addEventListener("ended", handleSongEnd);
+    }
+
+    // Cleanup the event listener when the component unmounts or when currentSongAudio changes
+    return () => {
+      if (currentSongAudio) {
+        currentSongAudio.removeEventListener("ended", handleSongEnd);
+      }
+    };
+  }, [currentSongAudio, currentSongData, songs]);
+
 
   return (
-    <SongContext.Provider value={{ currentSongData, setCurrentSongData, playSong, currentSongAudio, setCurrentSongAudio, rewindSong, songs, setSongs, getSongIndex, skipSong, toggleLike }} >
-      <Router>
+  <SongContext.Provider
+    value={{
+      currentSongData,
+      setCurrentSongData,
+      playSong,
+      currentSongAudio,
+      setCurrentSongAudio,
+      rewindSong,
+      songs,
+      setSongs,
+      getSongIndex,
+      skipSong,
+      toggleLike,
+      searchQuery,
+      setSearchQuery
+    }}
+  >
+    <Navbar setSearchQuery={setSearchQuery}/>
+    {loading ? (
+      <Loader />
+    ) : (
+      <>
         <Routes>
           <Route path="/" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/home" element={<Home />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/adminPanel" element={<AdminPanel />} />
           <Route path="/likedSongs" element={<LikedSongs />} />
           <Route path="/playlists" element={<Playlists />} />
         </Routes>
-      </Router>
-    </SongContext.Provider>
-  );
+      </>
+    )}
+    {!hidePlayer && <BottomPlayer />}
+  </SongContext.Provider>
+);
+
 } 
 
 export default App;

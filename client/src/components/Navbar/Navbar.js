@@ -1,20 +1,42 @@
-import React from 'react';
+import {React, useState, useRef, useEffect } from 'react';
 import styles from '../../pages/Home/Home.module.css';
 import { Link } from 'react-router-dom';
 import userIcon from "../assets/images/download.jpg";
 import LikedSongs from '../../pages/LikedSongs';
 
 export default function Navbar({ setSearchQuery }) {
+  const [showDropdown, setShowDropdown] = useState(false);
+  const dropdownRef = useRef();
+  const inputRef = useRef();
+  const user = JSON.parse(localStorage.getItem("user"));
 
   const handleInputChange = (e) => {
-    setSearchQuery(e.target.value);
+    setSearchQuery(inputRef.current.value);
   };
+
+  // Hide dropdown if clicking outside
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+        setShowDropdown(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem("user");
+    window.location.href = "/";
+  };
+  
 
   return (
     <div className={styles.navbarContainer}>
       <div className={styles.leftNav}>
-        <h1>Soundwave</h1>
-        <input type="text" placeholder='search for a song' onChange={handleInputChange}/>
+        <Link to="/home"><h1>Soundwave</h1></Link>
+        <input type="text" placeholder='search for a song' onChange={handleInputChange} ref={inputRef} id="navbarSearchInput"/>
       </div>
 
       <div className={styles.rightNav}>
@@ -24,7 +46,20 @@ export default function Navbar({ setSearchQuery }) {
           <Link to="/playlists">Playlists</Link>
         </div>
         <div className={styles.iconContainer}>
-          <img src={userIcon} alt="user-icon" />
+          <img
+            src={userIcon}
+            alt="user-icon"
+            onClick={() => setShowDropdown((prev) => !prev)}
+            style={{ cursor: "pointer" }}
+          />
+
+          {showDropdown && (
+            <div className={styles.dropdownMenu}>
+              <Link to="/profile" style={{ margin: "0px"}}><div className={styles.dropdownItem}>Profile</div></Link>
+              {user.isAdmin ? <Link to="/adminPanel" style={{ margin: "0px"}}><div className={styles.dropdownItem} style={{ color: "purple"}}>Admin Panel</div></Link> : ""}
+              <div className={styles.dropdownItem} onClick={handleLogout}>Logout</div>
+            </div>
+          )}
         </div>
       </div>
   </div>

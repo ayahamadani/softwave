@@ -1,9 +1,28 @@
-import { React, useState } from 'react';
+import { React, useEffect, useState, useContext } from 'react';
 import styles from "./AdminPanel.module.css";
+import Navbar from '../../components/Navbar/Navbar';
+import SongContext from '../../components/context/SongContext';
 
 export default function AdminPanel() {
     const [image, setImage] = useState(null);
     const [songFile, setSongFile] = useState(null);
+    const { 
+      currentSongData,
+      setCurrentSongData,
+      playSong,
+      currentSongAudio,
+      setCurrentSongAudio,
+      rewindSong,
+      songs,
+      setSongs,
+      getSongIndex,
+      skipSong,
+      toggleLike,
+      searchQuery,
+      setSearchQuery,
+      loading,
+      setLoading
+   } = useContext(SongContext);
 
     const handleSongFile = (event) => {
       const file = event.target.files[0];

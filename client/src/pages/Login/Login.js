@@ -1,8 +1,17 @@
-import { React, useState } from 'react';
+import { React, useState, useEffect } from 'react';
 import { Link, useNavigate } from "react-router-dom";
 import styles from "./Login.module.css";
 
 export default function Login() {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const user = localStorage.getItem("user");
+    if (user) {
+      navigate("/home", { replace: true });
+    }
+  }, []);
+
   const [ formData, setFormData ] = useState({
     username: '',
     password: ''
@@ -14,7 +23,6 @@ export default function Login() {
     });
 
   const [ error, setError ] = useState(null);
-  const navigate = useNavigate();
 
   const blur = () => {
     setWarnings({
@@ -53,8 +61,8 @@ export default function Login() {
         setError(data.message || "Signup failed!");
         return;
       }
-
-      navigate("/home");
+      localStorage.setItem("user", JSON.stringify(data));
+      navigate("/home", { replace: true });
     } catch (error) {
       setError(error.message);
     }
@@ -63,7 +71,7 @@ export default function Login() {
 
   return (
     <div className={styles.loginContainer}> 
-      <h1>Softwave</h1>
+      <h1 className={styles.title}>Softwave</h1>
       <div className={styles.loginInputsContainer}>
         <p className={styles.login}>Login</p>
         <form action="post" onSubmit={handleSubmit} >

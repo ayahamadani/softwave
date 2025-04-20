@@ -3,11 +3,9 @@ import Navbar from '../components/Navbar/Navbar';
 import BottomPlayer from '../components/BottomPlayer/BottomPlayer';
 
 export default function Playlists() {
-  const [searchQuery, setSearchQuery] = useState("");
   return (
     <div>
-      <Navbar setSearchQuery={setSearchQuery}/>
-      <BottomPlayer />
+      <h2 style={{ marginLeft: "2em"}}>You have no playlists for now...</h2>
     </div>
   )
 }

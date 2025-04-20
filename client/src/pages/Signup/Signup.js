@@ -1,10 +1,19 @@
-import React from 'react';
+import { React, useEffect } from 'react';
 import { Link, useNavigate } from "react-router-dom";
 import styles from "../Login/Login.module.css";
 import Login from '../Login/Login';
 import { useState } from 'react';
 
 export default function Signup() {
+   const navigate = useNavigate();
+  
+    useEffect(() => {
+      const user = localStorage.getItem("user");
+      if (user) {
+        navigate("/home", { replace: true });
+      }
+    }, []);
+
   const [ formData, setFormData ] = useState({
     username: '',
     email: '',
@@ -18,7 +27,6 @@ export default function Signup() {
   });
 
   const [ error, setError ] = useState(null);
-  const navigate = useNavigate();
   
   const blur = () => {
     setWarnings({
@@ -81,7 +89,8 @@ export default function Signup() {
         return;
       }
 
-      navigate("/home");
+      localStorage.setItem("user", JSON.stringify(data));
+      navigate("/home", { replace : true });
     } catch (error) {
       setError(error.message);
     }
@@ -89,7 +98,7 @@ export default function Signup() {
 
   return (
     <div className={styles.loginContainer}> 
-      <h1>Softwave</h1>
+      <h1 className={styles.title}>Softwave</h1>
       <div className={styles.loginInputsContainer}>
         <p className={styles.login}>SignUp</p>
         <form action="post" onSubmit={handleSubmit}>

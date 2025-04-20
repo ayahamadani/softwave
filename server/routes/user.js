@@ -48,8 +48,9 @@ userRouter.post('/signup', [
 
         // Generate JWT token
         const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
-
-        res.status(201).json({ message: 'user registered successfully', token });
+        const isAdmin = user.isAdmin;
+        res.status(200).json({ message: "user registered successfully", username, isAdmin });
+        
     } catch (error) {
         res.status(500).json({ message: 'Server error', error});
     }
@@ -72,7 +73,8 @@ userRouter.post("/login", async (req, res) => {
         }
 
         const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: "1h" });
-        res.status(200).json({ message: "Login successful", token });
+        const isAdmin = user.isAdmin;
+        res.status(200).json({ message: "Login successful", username, isAdmin});
 
     } catch (error) {
         console.error(error);

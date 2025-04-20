@@ -70,6 +70,6 @@ form {
     width: 22em;
 }
 
-h1 {
-    padding: 2em;
+.title {
+    margin: 2em;
 }

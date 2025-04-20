@@ -1,6 +1,5 @@
 import { React, useEffect, useState, useContext } from 'react';
 import SongContext from '../../components/context/SongContext';
-import BottomPlayer from '../../components/BottomPlayer/BottomPlayer';
 import axios from 'axios';
 import Navbar from '../../components/Navbar/Navbar';
 import styles from './Home.module.css';
@@ -8,8 +7,23 @@ import image from "../../components/assets/images/download.jpg";
 import { Link } from 'react-router-dom';
 
 export default function Home() {
-  const [searchQuery, setSearchQuery] = useState("");
-  const { currentSongData, setCurrentSongData, playSong, currentSongAudio, setCurrentSongAudio, rewindSong, songs, setSongs, getSongIndex, skipSong, toggleLike } = useContext(SongContext);
+  const {
+      currentSongData,
+      setCurrentSongData,
+      playSong,
+      currentSongAudio,
+      setCurrentSongAudio,
+      rewindSong,
+      songs,
+      setSongs,
+      getSongIndex,
+      skipSong,
+      toggleLike,
+      searchQuery,
+      setSearchQuery,
+      loading,
+      setLoading
+    } = useContext(SongContext);
   // const [time, setTime] = useState({
   //   current: 0,
   //   duration: 0,
@@ -42,29 +56,6 @@ export default function Home() {
         .catch((err) => console.error("Failed to fetch songs:", err));
     }
   }, [searchQuery, setSongs]);
-
-  useEffect(() => {
-    const handleSongEnd = () => {
-      if (getSongIndex(currentSongData._id) === songs.length - 1) {
-        skipSong(currentSongData._id, true);
-      } else skipSong(currentSongData._id);
-    };
-
-    // Add event listener for the 'ended' event on the current audio element
-    // if (currentSongAudio) {
-    //   if (currentSongAudio) {
-    //     currentSongAudio.volume = volume;
-    //   }
-    //   currentSongAudio.addEventListener("ended", handleSongEnd);
-    // }
-
-    // Cleanup the event listener when the component unmounts or when currentSongAudio changes
-    return () => {
-      if (currentSongAudio) {
-        currentSongAudio.removeEventListener("ended", handleSongEnd);
-      }
-    };
-  }, [currentSongAudio, currentSongData, songs]);
 
   // useEffect(() => {
   //   if (!currentSongAudio) return;
@@ -101,7 +92,6 @@ export default function Home() {
 
   return (
     <div>
-      <Navbar setSearchQuery={setSearchQuery}/>
       <div style={{display: "flex"}}>
         <div className={styles.homeSongsContainer}>
           <p>Songs...</p>
@@ -116,19 +106,24 @@ export default function Home() {
                   <p>{song.artist}</p>
                 </div>
               </div>
-
-              <i className={`fa-solid ${currentSongData.isPlaying && currentSongData._id === song._id ? "fa-pause" : "fa-play"}`} onClick={() => playSong(song)} style={{ cursor: "pointer" }}></i>
+              <div style={{ paddingRight: "0.5em"}}>
+                <i style={{color: "black", cursor: "pointer", paddingRight: "0.7em"}} className={`fa-heart ${song.isLiked ? "fa-solid" : "fa-regular"}`}></i>
+                <i className={`fa-solid ${currentSongData.isPlaying && currentSongData._id === song._id ? "fa-pause" : "fa-play"}`} onClick={() => playSong(song)} style={{ cursor: "pointer" }}></i>
+              </div>
             </div>
           ))}
         </div>
-        <div>
-          <Link to="/likedSongs">
+        <div style={{ display: "flex", gap: "10%", justifyContent: "center", width: "50%"}}>
+          <Link to="/likedSongs" style={{ cursor: "pointer", textDecoration: "none", color: "black"}}>
             <img src={image} alt="liked-songs-collection-cover" style={{borderRadius: "15px", width: "13em", cursor: "pointer"}}/>
             <p style={{ cursor: "pointer", textDecoration: "none"}}>Liked Songs</p>
           </Link>
+          <Link to="/playlists" style={{ cursor: "pointer", textDecoration: "none", color: "black"}}>
+            <img src={image} alt="liked-songs-collection-cover" style={{borderRadius: "15px", width: "13em", cursor: "pointer"}}/>
+            <p >Playlists</p>
+          </Link>
         </div>
       </div>
-      <BottomPlayer />
     </div>
   )
 }
