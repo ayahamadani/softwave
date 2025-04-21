@@ -68,13 +68,15 @@ songRouter.get("/liked", async (req, res) => {
   }
 });
 
-
-
-// songRouter.get('/:id', async (req, res) => {
-//     try {
-//       const song = await Song.findById(req.params.id);
-//       res.json(song);
-//     } catch (err) {
-//       res.status(500).json({ error: 'Song not found' });
-//     }
-//   });
+// POST /songs
+songRouter.post("/", async (req, res) => {
+  try {
+    const { name, artist, genre, audioUrl, albumCover } = req.body;
+    const newSong = new Song({ name, artist, genre, audioUrl, albumCover });
+    await newSong.save();
+    res.status(201).json(newSong);
+  } catch (err) {
+    console.error("Failed to save song:", err);
+    res.status(500).json({ error: "Failed to save song" });
+  }
+});

@@ -5,6 +5,7 @@ const dotenv = require('dotenv');
 const { body, validationResult } = require('express-validator');
 const userRouter = express.Router();
 const User = require("../models/user");
+const AWS = require('aws-sdk');
 
 dotenv.config({ path: "../config/config.env" });
 
@@ -89,6 +90,21 @@ userRouter.post("/login", async (req, res) => {
 userRouter.get("/", async (req, res) => {
     const users = await User.find();
     res.json(users);
+});
+
+// Get user based on Id
+// GET /auth/:userId
+userRouter.get("/:userId", async (req, res) => {
+   try{
+    
+    const user = await User.findById(req.params.userId);
+    if(!user) return res.status(400).json({ message: "user does not exist"});
+
+    res.json(user);
+   } catch (err) {
+    console.error(err);
+    return res.status(500).json({ message: "server error"});
+   }
 });
 
 module.exports = userRouter;
