@@ -13,6 +13,7 @@ import AdminPanel from './pages/AdmingPanel/AdminPanel';
 import Profile from './pages/Profile/Profile';
 import BottomPlayer from './components/BottomPlayer/BottomPlayer';
 import ProtectedRoute from './components/ProtectedRoute';
+import PlaylistDetail from './pages/IndividualPlaylist/PlaylistDetail';
 import { BrowserRouter as Router, Routes, Route, useLocation  } from "react-router-dom";
 
 function App() {
@@ -20,6 +21,7 @@ function App() {
   const [currentSongAudio, setCurrentSongAudio] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [songs, setSongs] = useState([]);
+  const [volume, setVolume] = useState(1);
 
   const location = useLocation();
   const [loading, setLoading] = useState(false);
@@ -181,6 +183,7 @@ function App() {
 
     // Add event listener for the 'ended' event on the current audio element
     if (currentSongAudio) {
+      currentSongAudio.volume = volume;
       currentSongAudio.addEventListener("ended", handleSongEnd);
     }
 
@@ -208,7 +211,9 @@ function App() {
       skipSong,
       toggleLike,
       searchQuery,
-      setSearchQuery
+      setSearchQuery,
+      volume,
+      setVolume
     }}
   >
     {!hidePlayer && <Navbar setSearchQuery={setSearchQuery}/>}
@@ -232,6 +237,7 @@ function App() {
           />
           <Route path="/likedSongs" element={<LikedSongs />} />
           <Route path="/playlists" element={<Playlists />} />
+          <Route path="/playlists/:name" element={<PlaylistDetail />} />
         </Routes>
       </>
     )}

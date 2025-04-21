@@ -4,6 +4,7 @@ const User = require("../models/user");
 const Song = require("../models/song");
 const userRouter = require("./user");
 const songRouter = require("./song");
+const playlistRouter = require("./playlist");
 
 module.exports = rootRouter;
 
@@ -12,5 +13,5 @@ rootRouter.get("/", (req, res) => {
 });
 
 rootRouter.use("/auth", userRouter);
-
 rootRouter.use("/songs", songRouter);
+rootRouter.use("/playlists", playlistRouter);

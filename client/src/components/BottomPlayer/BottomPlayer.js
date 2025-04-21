@@ -1,15 +1,21 @@
 import { React, useEffect, useState, useContext, useRef } from 'react';
 import SongContext from '../context/SongContext';
 import styles from '../../pages/Home/Home.module.css';
+import axios from 'axios';
 
 export default function BottomPlayer() {
-    const { currentSongData, setCurrentSongData, playSong, currentSongAudio, setCurrentSongAudio, rewindSong, songs, setSongs, getSongIndex, skipSong, toggleLike } = useContext(SongContext);
+    const { currentSongData, setCurrentSongData, playSong, currentSongAudio, setCurrentSongAudio, rewindSong, songs, setSongs, getSongIndex, skipSong, toggleLike, volume, setVolume } = useContext(SongContext);
     const [currentTime, setCurrentTime] = useState(0);
     const [duration, setDuration] = useState(0);
-    const [volume, setVolume] = useState(1);
     const [lastVolume, setLastVolume] = useState(1);
     const [showDropdown, setShowDropdown] = useState(false);
     const dropdownRef = useRef();
+    const [showModal, setShowModal] = useState(false);
+    const [playlistName, setPlaylistName] = useState("");
+    const [showPlaylistSelect, setShowPlaylistSelect] = useState(false);
+    const [userPlaylists, setUserPlaylists] = useState([]);
+
+
 
     useEffect(() => {
         if (!currentSongAudio) return;
@@ -59,16 +65,57 @@ export default function BottomPlayer() {
       };
 
     // Hide dropdown if clicking outside
-      useEffect(() => {
-        const handleClickOutside = (e) => {
-          if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
-            setShowDropdown(false);
-          }
-        };
+    useEffect(() => {
+      const handleClickOutside = (e) => {
+        if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+          setShowDropdown(false);
+        }
+      };
+  
+      document.addEventListener("mousedown", handleClickOutside);
+      return () => document.removeEventListener("mousedown", handleClickOutside);
+    }, []);
+
+    const handleCreatePlaylist = async () => {    
+      try {
+        const user = JSON.parse(localStorage.getItem("user"));
+        console.log(user)
+        const res = await axios.post("http://localhost:5000/playlists", {
+          name: playlistName,
+          userId: user.userId,
+          songId: currentSongData._id
+        });
+        alert("Playlist created!");
+        setShowModal(false);
+        setPlaylistName("");
+      } catch (err) {
+        console.error("Error creating playlist", err);
+      }
+    };
+
+    const fetchUserPlaylists = async () => {
+      const user = JSON.parse(localStorage.getItem("user"));
+      try {
+        const res = await axios.get(`http://localhost:5000/playlists/user/${user.userId}`);
+        setUserPlaylists(res.data);
+        setShowPlaylistSelect(true);
+      } catch (err) {
+        console.error("Error fetching playlists", err);
+      }
+    };    
+
+    const addToPlaylist = async (playlistId) => {
+      try {
+        await axios.put(`http://localhost:5000/playlists/${playlistId}/add`, {
+          songId: currentSongData._id,
+        });
+        setShowPlaylistSelect(false);
+      } catch (err) {
+        console.error("Error adding song to playlist", err);
+      }
+    };
     
-        document.addEventListener("mousedown", handleClickOutside);
-        return () => document.removeEventListener("mousedown", handleClickOutside);
-      }, []);
+    
 
     return (
       <div className={styles.stickyBottom}>
@@ -139,9 +186,42 @@ export default function BottomPlayer() {
               </div>
             </div>
             {showDropdown && (
-              <div className={styles.bottomDropDownMenu}>
-                <div className={styles.dropdownItem}>Add To Existing Playlist</div>                
-                <div className={styles.dropdownItem} style={{color: "purple"}}>Create A New Playlist</div>
+              <div className={styles.bottomDropDownMenu} ref={dropdownRef}>
+                <div className={styles.dropdownItem} onClick={fetchUserPlaylists}>Add To Existing Playlist</div>                
+                <div className={styles.dropdownItem} style={{color: "purple"}}  onClick={() => { setShowModal(true); setShowDropdown(false);}}>Create A New Playlist</div>
+              </div>
+            )}
+            {showModal && (
+              <div className={styles.modalOverlay}>
+                <div className={styles.modalContent}>
+                  <h3>Create a Playlist</h3>
+                  <input
+                    type="text"
+                    placeholder="Enter playlist name"
+                    value={playlistName}
+                    onChange={(e) => setPlaylistName(e.target.value)}
+                    className={styles.modalInput}
+                  />
+                  <div className={styles.modalButtons}>
+                    <button onClick={handleCreatePlaylist}>Create</button>
+                    <button onClick={() => setShowModal(false)}>Cancel</button>
+                  </div>
+                </div>
+              </div>
+            )}
+            {showPlaylistSelect && (
+              <div className={styles.modal}>
+                <button className={styles.closeButton} onClick={() => setShowPlaylistSelect(false)}>✖</button>
+                <h4>Select a playlist</h4>
+                {userPlaylists.map((playlist) => (
+                  <div
+                    key={playlist._id}
+                    className={styles.dropdownItem}
+                    onClick={() => addToPlaylist(playlist._id)}
+                  >
+                    {playlist.name}
+                  </div>
+                ))}
               </div>
             )}
             <i

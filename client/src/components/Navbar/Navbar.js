@@ -54,7 +54,7 @@ export default function Navbar({ setSearchQuery }) {
           />
 
           {showDropdown && (
-            <div className={styles.dropdownMenu}>
+            <div className={styles.dropdownMenu} ref={dropdownRef}>
               <Link to="/profile" style={{ margin: "0px"}}><div className={styles.dropdownItem}>Profile</div></Link>
               {user.isAdmin ? <Link to="/adminPanel" style={{ margin: "0px"}}><div className={styles.dropdownItem} style={{ color: "purple"}}>Admin Panel</div></Link> : ""}
               <div className={styles.dropdownItem} onClick={handleLogout}>Logout</div>
