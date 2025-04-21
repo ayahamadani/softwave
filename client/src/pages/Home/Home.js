@@ -107,7 +107,6 @@ export default function Home() {
                 </div>
               </div>
               <div style={{ paddingRight: "0.5em"}}>
-                <i style={{color: "black", cursor: "pointer", paddingRight: "0.7em"}} className={`fa-heart ${song.isLiked ? "fa-solid" : "fa-regular"}`}></i>
                 <i className={`fa-solid ${currentSongData.isPlaying && currentSongData._id === song._id ? "fa-pause" : "fa-play"}`} onClick={() => playSong(song)} style={{ cursor: "pointer" }}></i>
               </div>
             </div>

@@ -155,11 +155,9 @@
   border-radius: 8px;
   z-index: 1000;
   min-width: 120px;
-  border-radius: 8px;
 }
 
 .dropdownItem {
-  padding: 10px;
   cursor: pointer;
   border-radius: 10px;
 }
@@ -175,7 +173,6 @@
   background-color: white;
   border: 1px solid #ccc;
   box-shadow: 0px 2px 8px rgba(0,0,0,0.1);
-  border-radius: 8px;
   z-index: 1000;
   min-width: 120px;
   border-radius: 8px;
@@ -253,7 +250,6 @@
   border-radius: 8px;
   cursor: pointer;
   background-color: #f7f7f7;
-  margin-bottom: 0.5em;
   transition: background-color 0.2s ease;
 }
 

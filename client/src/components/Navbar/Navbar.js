@@ -1,14 +1,16 @@
-import {React, useState, useRef, useEffect } from 'react';
+import {React, useState, useRef, useEffect, useContext } from 'react';
 import styles from '../../pages/Home/Home.module.css';
 import { Link } from 'react-router-dom';
-import userIcon from "../assets/images/download.jpg";
 import LikedSongs from '../../pages/LikedSongs';
+import axios from 'axios';
+import SongContext from '../../components/context/SongContext';
 
 export default function Navbar({ setSearchQuery }) {
   const [showDropdown, setShowDropdown] = useState(false);
   const dropdownRef = useRef();
   const inputRef = useRef();
   const user = JSON.parse(localStorage.getItem("user"));
+  const { userIcon, setUserIcon } = useContext(SongContext);
 
   const handleInputChange = (e) => {
     setSearchQuery(inputRef.current.value);
@@ -30,7 +32,17 @@ export default function Navbar({ setSearchQuery }) {
     localStorage.removeItem("user");
     window.location.href = "/";
   };
-  
+
+  useEffect(()=>{
+    const user = JSON.parse(localStorage.getItem("user"));
+    const userId = user.userId;
+    axios
+    .get(`http://localhost:5000/auth/${userId}`)
+    .then((res) => {
+      setUserIcon(res.data.icon);
+    })
+    .catch((err) => console.error("Failed to fetch Icon", err));
+  }, []);
 
   return (
     <div className={styles.navbarContainer}>

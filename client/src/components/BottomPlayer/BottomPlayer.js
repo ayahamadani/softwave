@@ -85,7 +85,6 @@ export default function BottomPlayer() {
           userId: user.userId,
           songId: currentSongData._id
         });
-        alert("Playlist created!");
         setShowModal(false);
         setPlaylistName("");
       } catch (err) {

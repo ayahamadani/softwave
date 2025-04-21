@@ -22,6 +22,7 @@ function App() {
   const [searchQuery, setSearchQuery] = useState("");
   const [songs, setSongs] = useState([]);
   const [volume, setVolume] = useState(1);
+  const [userIcon, setUserIcon]= useState("");
 
   const location = useLocation();
   const [loading, setLoading] = useState(false);
@@ -195,6 +196,22 @@ function App() {
     };
   }, [currentSongAudio, currentSongData, songs]);
 
+  useEffect(()=>{
+    const user = JSON.parse(localStorage.getItem("user"));
+    let userId = null;
+    if(user) {
+      userId = user.userId;
+    } else {
+      return;
+    }
+    axios
+    .get(`http://localhost:5000/auth/${userId}`)
+    .then((res) => {
+      setUserIcon(res.data.icon);
+    })
+    .catch((err) => console.error("Failed to fetch Icon", err));
+  }, []);
+
 
   return (
   <SongContext.Provider
@@ -213,7 +230,9 @@ function App() {
       searchQuery,
       setSearchQuery,
       volume,
-      setVolume
+      setVolume,
+      userIcon,
+      setUserIcon
     }}
   >
     {!hidePlayer && <Navbar setSearchQuery={setSearchQuery}/>}
