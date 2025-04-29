@@ -5,10 +5,6 @@ const songSchema = new mongoose.Schema({
   artist: String,
   genre: String,
   albumCover: String,
-  isLiked: {
-    type: Boolean,
-    default: false,
-  },
   audio: String
 });
 

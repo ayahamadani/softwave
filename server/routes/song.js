@@ -25,49 +25,6 @@ songRouter.get("/", async (req, res) => {
     res.json(songs);
 });
 
-songRouter.put("/:id/toggle-like", async (req, res) => {
-  try {
-    const song = await Song.findById(req.params.id);
-
-    if (!song) return res.status(404).json({ error: "Song not found" });
-
-    song.isLiked = !song.isLiked;
-    await song.save();
-
-    res.json({ message: 'Song liked!', song });
-  } catch (err) {
-    console.error("Toggle like error", err);
-    res.status(500).json({ error: "Server error, something went wrong" });
-  }
-});
-
-// GET /songs/liked/search?name=songname
-songRouter.get("/liked/search", async (req, res) => {
-  const songName = req.query.name;
-
-  try {
-    const likedSongs = await Song.find({
-      name: { $regex: songName, $options: "i" },
-      isLiked: true
-    });
-    res.json(likedSongs);
-  } catch (err) {
-    console.error("Error searching liked songs:", err);
-    res.status(500).json({ error: "Internal Server Error" });
-  }
-});
-
-// GET /songs/liked
-songRouter.get("/liked", async (req, res) => {
-  try {
-    const likedSongs = await Song.find({ isLiked: true });
-    res.json(likedSongs);
-  } catch (err) {
-    console.error("Error fetching liked songs:", err);
-    res.status(500).json({ error: "Internal Server Error" });
-  }
-});
-
 // POST /songs
 songRouter.post("/", async (req, res) => {
   try {

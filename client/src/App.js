@@ -23,6 +23,8 @@ function App() {
   const [songs, setSongs] = useState([]);
   const [volume, setVolume] = useState(1);
   const [userIcon, setUserIcon]= useState("");
+  const [likedSongsFront, setLikedSongsFront] = useState([]);
+
 
   const location = useLocation();
   const [loading, setLoading] = useState(false);
@@ -42,7 +44,6 @@ function App() {
     if (navbarInput) navbarInput.value = "";
     setSearchQuery("");
     setLoading(true);
-    setSongs([]);
     
     const timeout = setTimeout(() => {
       setLoading(false);
@@ -163,13 +164,50 @@ function App() {
   };
 
   // Like a song function
-  const toggleLike = async (song) => {
-    try {
-      const res = await axios.put(`http://localhost:5000/songs/${song._id}/toggle-like`);
-      setCurrentSongData({
-        ...song,
-        isLiked: !song.isLiked
-      });
+ const toggleLike = async (song) => {
+  const user = JSON.parse(localStorage.getItem("user"));
+  if (!user) {
+    console.error("User not found in localStorage");
+    return;
+  }
+
+  try {
+    let updatedLikedSongs;
+
+    if (song.isLiked) {
+      // Unlike the song
+      await axios.delete(`http://localhost:5000/likedsongs/${user.userId}/${song._id}`);
+
+      // Remove from likedSongsFront
+      updatedLikedSongs = likedSongsFront.filter((s) => s._id !== song._id);
+    } else {
+      // Like the song
+      await axios.post(`http://localhost:5000/likedsongs/${user.userId}/${song._id}`);
+
+      // Add to likedSongsFront
+      updatedLikedSongs = [...likedSongsFront, { ...song, isLiked: true }];
+    }
+
+    setLikedSongsFront(updatedLikedSongs);
+
+
+    
+    // Update the state to reflect the new liked status
+    setCurrentSongData({
+      ...song,
+      isLiked: !song.isLiked,
+    });
+    
+    if(currentSongData.isLiked){
+      
+    }
+
+    setSongs((prevSongs) =>
+      prevSongs.map((s) =>
+        s._id === song._id ? { ...s, isLiked: !s.isLiked } : s
+      )
+    );
+
     } catch (err) {
       console.error('Error toggling like:', err);
     }
@@ -232,7 +270,9 @@ function App() {
       volume,
       setVolume,
       userIcon,
-      setUserIcon
+      setUserIcon,
+      likedSongsFront,
+      setLikedSongsFront
     }}
   >
     {!hidePlayer && <Navbar setSearchQuery={setSearchQuery}/>}

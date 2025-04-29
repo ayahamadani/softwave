@@ -8,58 +8,50 @@ import styles from './Home/Home.module.css';
 export default function LikedSongs() {
     const { 
         currentSongData,
-        setCurrentSongData,
         playSong,
-        currentSongAudio,
-        setCurrentSongAudio,
-        rewindSong,
-        songs,
-        setSongs,
-        getSongIndex,
-        skipSong,
-        toggleLike,
         searchQuery,
-        setSearchQuery,
-        loading,
-        setLoading
+        likedSongsFront,
+        setLikedSongsFront
      } = useContext(SongContext);
-    const [likedSongs, setLikedSongs] = useState([]);
 
 
-    useEffect(() => {
-        
-        if (searchQuery.trim() !== "") {
-            axios
-                .get(`http://localhost:5000/songs/liked/search?name=${encodeURIComponent(searchQuery)}`)
-                .then((res) => {
-                    const songList = res.data.map(song => ({
-                        ...song,
-                        isPlaying: false
-                    }));
-                    setLikedSongs(songList);
-                    setSongs(likedSongs);
-                })
-                .catch((err) => console.error("Search failed:", err));
-        } else {
-            axios
-                .get("http://localhost:5000/songs/liked")
-                .then((response) => {
-                    setLikedSongs(response.data);
-                    setSongs(likedSongs);
-                })
-                .catch((error) => {
-                    console.error("Error fetching liked songs:", error);
-                });
-        }
-    }, [searchQuery, toggleLike]);
     
+    useEffect(() => {
+        const user = JSON.parse(localStorage.getItem("user"));
+        if (!user) return;
+      
+        const fetchLikedSongs = async () => {
+          try {
+            // Get full song documents already populated by backend
+            const res = await axios.get(`http://localhost:5000/likedsongs/${user.userId}`);
+            const likedSongs = res.data
+              .filter(song =>
+                song.name.toLowerCase().includes(searchQuery.trim().toLowerCase())
+              )
+              .map(song => ({
+                ...song,
+                isLiked: true,
+                isPlaying: false,
+              }));
+      
+             setLikedSongsFront(likedSongs);
+          } catch (err) {
+            console.error("Error fetching liked songs:", err);
+          }
+        };
+      
+        fetchLikedSongs();
+      }, [searchQuery]);
+      
+      
+
     
     return (
       <div>
         <div className={styles.homeSongsContainer}>
             <p>Liked Songs...</p>
             <hr />
-            {likedSongs.length > 0 ? likedSongs.map((song, index) => (
+            {likedSongsFront.length > 0 ? likedSongsFront.map((song, index) => (
                 <div key={song._id} className={styles.songItem}>
                 <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
                     <div>{index + 1}</div>

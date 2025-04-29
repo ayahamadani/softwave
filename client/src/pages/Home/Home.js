@@ -9,20 +9,10 @@ import { Link } from 'react-router-dom';
 export default function Home() {
   const {
       currentSongData,
-      setCurrentSongData,
       playSong,
-      currentSongAudio,
-      setCurrentSongAudio,
-      rewindSong,
       songs,
       setSongs,
-      getSongIndex,
-      skipSong,
-      toggleLike,
       searchQuery,
-      setSearchQuery,
-      loading,
-      setLoading
     } = useContext(SongContext);
   // const [time, setTime] = useState({
   //   current: 0,
@@ -31,31 +21,39 @@ export default function Home() {
   // });
 
   useEffect(() => {
-    if (searchQuery.trim() !== "") {
-      axios
-        .get(`http://localhost:5000/songs/search?name=${encodeURIComponent(searchQuery)}`)
-        .then((res) => {
-          const songList = res.data.map(song => ({
-            ...song,
-            isPlaying: false
-          }));
-          setSongs(songList);
-        })
-        .catch((err) => console.error("Search failed:", err));
-    } else {
-      // If search is cleared, fetch all songs
-      axios
-        .get("http://localhost:5000/songs")
-        .then((res) => {
-          const songList = res.data.map(song => ({
-            ...song,
-            isPlaying: false
-          }));
-          setSongs(songList);
-        })
-        .catch((err) => console.error("Failed to fetch songs:", err));
-    }
+    const fetchLikedSongs = async () => {
+      const user = JSON.parse(localStorage.getItem("user"));
+      if (!user) {
+        console.error("User not found in localStorage");
+        return;
+      }
+  
+      try {
+        // Fetch liked songs for the user
+        const likedSongsRes = await axios.get(`http://localhost:5000/likedsongs/${user.userId}`);
+        const likedSongIds = likedSongsRes.data.map(song => song._id); // Assuming liked songs are returned as an array of song objects
+  
+        // Now fetch all songs (with search if applicable)
+        const songsRes = searchQuery.trim() !== ""
+          ? await axios.get(`http://localhost:5000/songs/search?name=${encodeURIComponent(searchQuery)}`)
+          : await axios.get("http://localhost:5000/songs");
+  
+        const songList = songsRes.data.map(song => ({
+          ...song,
+          isPlaying: false,
+          isLiked: likedSongIds.includes(song._id), // Set isLiked to true if the song is in likedSongIds
+        }));
+  
+        setSongs(songList); // Update the songs state
+  
+      } catch (err) {
+        console.error("Error fetching liked songs:", err);
+      }
+    };
+  
+    fetchLikedSongs();
   }, [searchQuery, setSongs]);
+  
 
   // useEffect(() => {
   //   if (!currentSongAudio) return;

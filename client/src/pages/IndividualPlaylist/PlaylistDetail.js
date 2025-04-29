@@ -17,7 +17,6 @@ export default function PlaylistDetail() {
         const res = await axios.get(`http://localhost:5000/playlists/user/${user.userId}`);
         const found = res.data.find((p) => p.name === name);
         setPlaylist(found);
-        setSongs(found.songs);
       } catch (err) {
         console.error(err);
       }
@@ -43,7 +42,6 @@ export default function PlaylistDetail() {
                     </div>
                 </div>
                 <div style={{ paddingRight: "0.5em"}}>
-                    <i style={{color: "black", cursor: "pointer", paddingRight: "0.7em"}} className={`fa-heart ${song.isLiked ? "fa-solid" : "fa-regular"}`}></i>
                     <i className={`fa-solid ${currentSongData.isPlaying && currentSongData._id === song._id ? "fa-pause" : "fa-play"}`} onClick={() => playSong(song)} style={{ cursor: "pointer" }}></i>
                 </div>
             </div>
