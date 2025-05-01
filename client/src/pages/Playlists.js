@@ -26,7 +26,7 @@ export default function Playlists() {
         <div style={{ display: "flex", flexDirection: "row", gap: "1em", width: "100%" }}>
           {playlists.map((playlist, index) => (
            <Link
-            to={`/playlists/${encodeURIComponent(playlist.name)}`}
+            to={`/playlists/${encodeURIComponent(playlist._id)}`}
             key={playlist._id}
             style={{
               height: "15em",

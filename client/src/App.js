@@ -296,7 +296,7 @@ function App() {
           />
           <Route path="/likedSongs" element={<LikedSongs />} />
           <Route path="/playlists" element={<Playlists />} />
-          <Route path="/playlists/:name" element={<PlaylistDetail />} />
+          <Route path="/playlists/:_id" element={<PlaylistDetail />} />
         </Routes>
       </>
     )}

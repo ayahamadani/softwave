@@ -12,24 +12,14 @@ export default function AdminPanel() {
     const [songName, setSongName] = useState("");
     const [artist, setArtist] = useState("");
     const [genre, setGenre] = useState("");
+    const [users, setUsers] = useState([]);
+    const [searchInput, setSearchInput] = useState("");
+    const [filteredUsers, setFilteredUsers] = useState([]);
 
-  //   const { 
-  //     currentSongData,
-  //     setCurrentSongData,
-  //     playSong,
-  //     currentSongAudio,
-  //     setCurrentSongAudio,
-  //     rewindSong,
-  //     songs,
-  //     setSongs,
-  //     getSongIndex,
-  //     skipSong,
-  //     toggleLike,
-  //     searchQuery,
-  //     setSearchQuery,
-  //     loading,
-  //     setLoading
-  //  } = useContext(SongContext);
+
+    const { 
+      userIcon
+   } = useContext(SongContext);
 
    const handleImageChange = (event) => {
       const file = event.target.files[0];
@@ -90,7 +80,42 @@ export default function AdminPanel() {
       }
     };
     
+    useEffect(() => {
+      const fetchUsers = async () => {
+        const user = JSON.parse(localStorage.getItem("user"));
+        if (!user) return;
     
+        try {
+          const res = await axios.get("http://localhost:5000/auth");
+          const fetchedUsers = res.data;
+          setUsers(fetchedUsers);
+          setFilteredUsers(fetchedUsers);
+        } catch (err) {
+          console.error("Error fetching users:", err);
+        }
+      };
+    
+      fetchUsers();
+    }, []);
+
+    useEffect(() => {
+      const filtered = users.filter(user =>
+        user.username.toLowerCase().includes(searchInput.toLowerCase())
+      );
+      setFilteredUsers(filtered);
+    }, [searchInput, users]);
+
+    
+    const toggleAdmin = async (userId) => {
+      try{
+        await axios.put(`http://localhost:5000/auth/${userId}/makeAdmin`);
+        const res = await axios.get("http://localhost:5000/auth");
+        setUsers(res.data);
+        } catch (err) {
+          console.error("Error toggling Adminship", err);
+      }
+    }
+
   
   return (
     <div style={{display: "flex", justifyContent: "space-between"}}>
@@ -128,8 +153,43 @@ export default function AdminPanel() {
            </form>
         </div>
       <div style={{width: "50%"}}>
-        <p>Make user an admin...</p>
-        <hr style={{width: "30em"}}/>
+        <div>
+          <p>Make user an admin...</p>
+          <hr style={{width: "30em", marginBottom: "2em"}}/>
+        </div>
+        <div>
+          {users.length > 0 ? (
+            <>
+              <div style={{ display: "flex", flexDirection: "row", gap: "1em", width: "100%" }}>
+                {filteredUsers.map((user, index) => (
+                <div
+                  style={{
+                    height: "15em",
+                    width: "15em",
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "center",
+                    marginTop: "1em",
+                    cursor: "pointer",
+                    textDecoration: "none",
+                    color: "inherit"
+                  }}
+                >
+                  <img src={userIcon} alt="user-icon" style={{ width: "80%", borderRadius: "15px", height: "80%", objectFit: "cover", alignSelf: "center" }} />
+                  <h3 style={{textAlign: "center"}}>{user.username}</h3>
+                  <p style={{ color: "gray", textAlign: "center", marginTop: "0.5em" }}>{user.isAdmin ? "Admin" : "Normal"} User</p>
+                  <input onClick={() => toggleAdmin(user._id)} style={{borderRadius: "7px", padding: "0.5em 1em", marginTop: "0.5em", border: "solid 2px purple", color: "purple", background: "none", cursor: "pointer" }} type="button" value={user.isAdmin? "Remove Admin" : "Make Admin"}/>
+                </div>
+                ))}
+              </div>
+            </>
+          ) : (
+            <h2 style={{ marginTop: "2em" }}>No users Found</h2>
+          )}
+        </div>
+        <div style={{paddingTop: "3em"}}>
+          <input style={{borderRadius: "7px", padding: "0.5em 1em", marginTop: "0.5em", border: "solid 2px purple", background: "none" }} type="text" placeholder="search for a user" value={searchInput} onChange={(e) => setSearchInput(e.target.value)}/>
+        </div>
       </div>
     </div>
   )

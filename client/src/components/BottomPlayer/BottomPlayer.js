@@ -76,15 +76,22 @@ export default function BottomPlayer() {
       return () => document.removeEventListener("mousedown", handleClickOutside);
     }, []);
 
-    const handleCreatePlaylist = async () => {    
+    const handleCreatePlaylist = async () => {
       try {
         const user = JSON.parse(localStorage.getItem("user"));
-        console.log(user)
+        if (!user || !currentSongData?._id) {
+          console.error("Missing user or song data");
+          return;
+        }
+    
         const res = await axios.post("http://localhost:5000/playlists", {
           name: playlistName,
           userId: user.userId,
           songId: currentSongData._id
         });
+    
+        console.log("Created playlist:", res.data); // helpful for debugging
+    
         setShowModal(false);
         setPlaylistName("");
       } catch (err) {

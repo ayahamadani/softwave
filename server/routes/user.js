@@ -13,9 +13,11 @@ dotenv.config({ path: "../config/config.env" });
 // post /auth/signup
 userRouter.post('/signup', [
     // using express validator
-    body('username').notEmpty().isLength({ min: 6}).withMessage('username is required'),
+    body('username').notEmpty().isLength({ min: 6}).withMessage('username is required').matches(/^\S+$/).withMessage('Username must not contain spaces'),
     body('email').notEmpty().withMessage('invalid email'),
-    body('password').isLength({ min: 6 }).withMessage('password must be at least 6 characters'),
+    body('password')
+    .isLength({ min: 6 })
+    .withMessage('password must be at least 6 characters'),
 ], async (req, res) => {
     const errors = validationResult(req);
     if(!errors.isEmpty()) {
@@ -105,6 +107,22 @@ userRouter.get("/:userId", async (req, res) => {
     console.error(err);
     return res.status(500).json({ message: "server error"});
    }
+});
+
+userRouter.put("/:userId/makeAdmin", async (req, res) => {
+    try {
+        const user = await User.findById(req.params.userId);
+        if(!user) return res.status(400).json({ message: "user does not exist"});
+
+        user.isAdmin = !user.isAdmin;
+        await user.save();
+
+        return res.status(200).json({ message: "User admin status updated", user });
+
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ message: "Server Error" });
+    }
 });
 
 module.exports = userRouter;

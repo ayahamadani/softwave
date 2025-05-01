@@ -7,14 +7,9 @@ module.exports = playlistRouter;
 // POST /playlists
 playlistRouter.post("/", async (req, res) => {
     const { name, userId, songId } = req.body;
-    let playlistName = await Playlist.findOne({name});
 
     if (!name || !userId || !songId) {
         return res.status(400).json({ error: "Name, userId, and at least one songId are required." });
-    }
-
-    if (playlistName) {
-        return res.status(400).json({ message: 'name is taken'});
     }
 
     try {

@@ -5,7 +5,7 @@ import styles from '../../pages/Home/Home.module.css';
 import axios from "axios";
 
 export default function PlaylistDetail() {
-  const { name } = useParams();
+  const { _id } = useParams();
   const [playlist, setPlaylist] = useState(null);
   const { currentSongData, setCurrentSongData, playSong, currentSongAudio, setCurrentSongAudio, rewindSong, songs, setSongs, getSongIndex, skipSong, toggleLike, volume, setVolume } = useContext(SongContext);
 
@@ -15,7 +15,7 @@ export default function PlaylistDetail() {
       const user = JSON.parse(localStorage.getItem("user"));
       try {
         const res = await axios.get(`http://localhost:5000/playlists/user/${user.userId}`);
-        const found = res.data.find((p) => p.name === name);
+        const found = res.data.find((p) => p._id === _id);
         setPlaylist(found);
       } catch (err) {
         console.error(err);
@@ -23,7 +23,7 @@ export default function PlaylistDetail() {
     };
 
     fetchPlaylist();
-  }, [name]);
+  }, [_id]);
 
   if (!playlist) return <p style={{ padding: "2em"}}>Loading playlist...</p>;
 
@@ -31,7 +31,7 @@ export default function PlaylistDetail() {
     <div style={{ padding: "2em" }}>
       <h2>{playlist.name}</h2>
       <p>{playlist.songs.length} song(s)</p>
-       {songs.map((song, index) => (
+       {playlist.songs.map((song, index) => (
             <div key={song._id} className={styles.songItem} style={{width: "50%"}}>
                 <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
                     <div>{index + 1}</div>

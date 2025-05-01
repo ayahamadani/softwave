@@ -42,10 +42,7 @@ export default function LikedSongs() {
       
         fetchLikedSongs();
       }, [searchQuery]);
-      
-      
 
-    
     return (
       <div>
         <div className={styles.homeSongsContainer}>
