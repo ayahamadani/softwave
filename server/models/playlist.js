@@ -21,6 +21,10 @@ const PlaylistSchema = new mongoose.Schema({
     type: Date,
     default: Date.now
   },
+  playlistIcon: {
+     type: String,
+     default: "https://my-songs-bucket443181317692.s3.eu-north-1.amazonaws.com/user-icons/catee.jpg"
+  }
 });
 
 const Playlist = mongoose.model('Playlist', PlaylistSchema);

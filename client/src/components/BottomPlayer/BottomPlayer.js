@@ -4,7 +4,7 @@ import styles from '../../pages/Home/Home.module.css';
 import axios from 'axios';
 
 export default function BottomPlayer() {
-    const { currentSongData, setCurrentSongData, playSong, currentSongAudio, setCurrentSongAudio, rewindSong, songs, setSongs, getSongIndex, skipSong, toggleLike, volume, setVolume } = useContext(SongContext);
+    const { currentSongData, playSong, currentSongAudio, rewindSong, skipSong, toggleLike, volume, setVolume, currentQueue } = useContext(SongContext);
     const [currentTime, setCurrentTime] = useState(0);
     const [duration, setDuration] = useState(0);
     const [lastVolume, setLastVolume] = useState(1);
@@ -126,7 +126,7 @@ export default function BottomPlayer() {
     return (
       <div className={styles.stickyBottom}>
         <div style={{display: "flex", gap: "0.7em"}}>
-            <img src={currentSongData.albumCover} alt="currently-playing-song" style={{ width: "5em" }}/>
+            <img src={currentSongData.albumCover} alt="currently-playing-song" style={{ width: "5em", height: "5em", objectFit: "cover" }}/>
             <div style={{width: "6em"}} className={styles.white}>
             <strong>{currentSongData.name}</strong>
             <p>{currentSongData.artist}</p>
@@ -135,7 +135,7 @@ export default function BottomPlayer() {
         <div style={{width: "30em"}}>
             <div className={styles.audioControlIconsContainer}>
                 <i style={{ cursor: "pointer" }} className="fa-solid fa-backward-step" onClick={() => rewindSong(currentSongData)}></i>
-                <i style={{ cursor: "pointer" }} className={`fa-solid ${currentSongData.isPlaying ? "fa-pause" : "fa-play"}`} onClick={() => playSong(currentSongData)}></i>
+                <i style={{ cursor: "pointer" }} className={`fa-solid ${currentSongData.isPlaying ? "fa-pause" : "fa-play"}`} onClick={() => playSong(currentSongData, currentQueue)}></i>
                 <i style={{ cursor: "pointer" }} className="fa-solid fa-forward-step" onClick={() => skipSong(currentSongData)}></i>
             </div>
             <div className={styles.progressContainer}>

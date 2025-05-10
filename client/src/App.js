@@ -1,6 +1,6 @@
 import './App.css';
 import axios from 'axios';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import SongContext from './components/context/SongContext';
 import Home from './pages/Home/Home';
 import Login from './pages/Login/Login';
@@ -24,6 +24,8 @@ function App() {
   const [volume, setVolume] = useState(1);
   const [userIcon, setUserIcon]= useState("");
   const [likedSongsFront, setLikedSongsFront] = useState([]);
+  const [currentQueue, setCurrentQueue] = useState([]);
+  const [user, setUser] = useState(null);
 
 
   const location = useLocation();
@@ -31,10 +33,10 @@ function App() {
   const navbarInput = document.querySelector("#navbarSearchInput");
 
   // State to track if the current logged in user is an admin or not
-  const [user, setUser] = useState(() => {
+  useEffect(() => {
     const stored = localStorage.getItem("user");
-    return stored ? JSON.parse(stored) : null;
-  });
+    if (stored) setUser(JSON.parse(stored));
+  }, []);
 
   // To hide the bottom player from both the login and signup pages
   const hidePlayer = location.pathname === "/" || location.pathname === "/signup";
@@ -52,43 +54,63 @@ function App() {
     return () => clearTimeout(timeout);
   }, [location.pathname]);
 
-  const playSong = (song) => {
+  const playSong = useCallback(async (song, songCollection) => {
     if (!song || !song.audio) {
       console.error("Invalid song or audio source");
       return;
     }
-
-    // If it's the same song and playing, pause it
-    if (currentSongData && currentSongData._id === song._id && currentSongData.isPlaying) {
-      currentSongAudio.pause();
-      setCurrentSongData({ ...song, isPlaying: false });
-      return;
-    }
   
-    // If it's the same song and paused, resume it
-    if (currentSongData && currentSongData._id === song._id && !currentSongData.isPlaying) {
-      currentSongAudio.play();
-      setCurrentSongData({ ...song, isPlaying: true });
-      return;
-    }
+    // Always update the queue first
+    setCurrentQueue(Array.isArray(songCollection) ? songCollection : [song]);
   
-    // If none of the above (new song) play the song
-    fetch(song.audio)
-      .then(res => res.blob())
-      .then(data => {
-        if (currentSongAudio) {
-          currentSongAudio.pause();
+    // If same song is playing/paused
+    if (currentSongData?._id === song._id) {
+      try {
+        if (currentSongData?.isPlaying) {
+          await currentSongAudio?.pause();
+          setCurrentSongData(prev => ({ ...prev, isPlaying: false }));
+        } else {
+          await currentSongAudio?.play();
+          setCurrentSongData(prev => ({ ...prev, isPlaying: true }));
         }
+        return;
+      } catch (err) {
+        console.error("Play/pause error:", err);
+      }
+    }
   
-        const audioURL = URL.createObjectURL(data);
-        const newAudio = new Audio(audioURL);
-        setCurrentSongAudio(newAudio);
-        setCurrentSongData({ ...song, isPlaying: true });
-        newAudio.play();
-      })
-      .catch(err => console.error("Error playing song:", err));
-  };
-
+    // For new song
+    try {
+      // Clean up current audio
+      if (currentSongAudio) {
+        currentSongAudio.pause();
+        currentSongAudio.src = '';
+      }
+  
+      const newAudio = new Audio(song.audio);
+      newAudio.volume = volume;
+      
+      newAudio.addEventListener('canplaythrough', async () => {
+        try {
+          await newAudio.play();
+          setCurrentSongAudio(newAudio);
+          setCurrentSongData({ ...song, isPlaying: true });
+        } catch (err) {
+          console.error("Play failed:", err);
+          setCurrentSongData(prev => ({ ...prev, isPlaying: false }));
+        }
+      }, { once: true });
+  
+      newAudio.addEventListener('error', () => {
+        console.error("Audio loading error");
+        setCurrentSongData(prev => ({ ...prev, isPlaying: false }));
+      });
+  
+    } catch (err) {
+      console.error("Audio setup error:", err);
+    }
+  }, [currentSongAudio, currentSongData, volume]);
+  
   // Function which returns the song index by a given id
   const getSongIndex = (songId) => {
     for (let i = 0; i < songs.length; i++) {
@@ -97,71 +119,95 @@ function App() {
   };
 
   // Function which skips the current playing songs
-  const skipSong = (song, pause = false) => {
-    if (!song || !song.audio) {
-      console.error("Invalid song or audio source");
-      return;
-    }
-
-    if (!currentSongData || !songs.length) return;
+  const skipSong = useCallback((song, pause = false) => {
+    if (!song || !song.audio || !currentQueue || !currentQueue.length) return;
   
-    const currentIndex = getSongIndex(song._id);
-    const nextIndex = (currentIndex + 1) % songs.length;
+    const currentIndex = currentQueue.findIndex(s => s._id === song._id);
+    if (currentIndex === -1) return;
   
-    // Stop current audio
+    const nextIndex = (currentIndex + 1) % currentQueue.length;
+    const nextSong = currentQueue[nextIndex];
+  
+    // Clean up current audio
     if (currentSongAudio) {
       currentSongAudio.pause();
+      currentSongAudio.src = '';
     }
   
-    const nextSong = songs[nextIndex];
     const newAudio = new Audio(nextSong.audio);
-  
+    newAudio.volume = volume;
+    
     setCurrentSongAudio(newAudio);
-    setCurrentSongData({ ...nextSong, isPlaying: true });
+
+    setCurrentSongData({ ...nextSong, isPlaying: true }); 
   
     if (!pause) {
-      newAudio.play();
+      newAudio.play()
+        .then(() => {
+          setCurrentSongData({ ...nextSong, isPlaying: true });
+        })
+        .catch(err => {
+          console.error("Failed to play:", err);
+          setCurrentSongData({ ...nextSong, isPlaying: false });
+        });
+    } else {
+      setCurrentSongData({ ...nextSong, isPlaying: false });
     }
-  };
+    
+  }, [currentQueue, currentSongAudio, volume]);
 
   // Function to rewind the song or skip to the previous one
-  const rewindSong = (song) => {
-    if (!song || !song.audio) {
-      console.error("Invalid song or audio source");
-      return;
-    }
+const rewindSong = useCallback((song) => {
+  if (!song || !song.audio || !currentQueue || !currentQueue.length) return;
 
-    // Song currently palying before skipping
-    let currentSong = song;
-    // Song we're rewinding to
-    let prevSong;
+  const currentIndex = currentQueue.findIndex(s => s._id === song._id);
+  if (currentIndex === -1) return;
 
-    const currentIndex = getSongIndex(song._id);
-    if (currentIndex === 0) 
-      prevSong = songs[songs.length - 1];
-    else prevSong = songs[currentIndex - 1];
-    // If we're more than two seconds in the current song, we replay the same
-    if (currentSongAudio.currentTime > 2) {
-      if (song.isPlaying) {
-        currentSongAudio.pause();
-        setCurrentSongData({ ...currentSong, isPlaying: false });
-        const newAudio = new Audio (currentSong.audio);
-        setCurrentSongAudio(newAudio);
-        setCurrentSongData({ ...currentSong, isPlaying: true });
-        newAudio.play();
-      } else { // if the song isnt playing and trying to rewind while paused
-        const newAudio = new Audio (currentSong.audio);
-        setCurrentSongAudio(newAudio);
-      }
-    } else if (prevSong) {
+  let prevSong;
+  if (currentIndex === 0) {
+    prevSong = currentQueue[currentQueue.length - 1];
+  } else {
+    prevSong = currentQueue[currentIndex - 1];
+  }
+
+  // If >2 seconds in current song, restart same song
+  if (currentSongAudio?.currentTime > 2) {
+    currentSongAudio.currentTime = 0;
+    if (!currentSongData?.isPlaying) {
       currentSongAudio.pause();
-      setCurrentSongData({ ...currentSong, isPlaying: false });
-      const newAudio = new Audio(prevSong.audio);
-      setCurrentSongAudio(newAudio);
-      setCurrentSongData({ ...prevSong, isPlaying: true });
-      newAudio.play();
     }
-  };
+    return;
+  }
+
+  // Clean up current audio
+  if (currentSongAudio) {
+    currentSongAudio.pause();
+    currentSongAudio.src = '';
+  }
+
+  const newAudio = new Audio(prevSong.audio);
+  newAudio.volume = volume;
+  
+  setCurrentSongAudio(newAudio);
+  setCurrentSongData({ 
+    ...prevSong, 
+    isPlaying: true 
+  });
+
+  newAudio.play()
+  .then(() => {
+    setCurrentSongData(prev => ({
+      ...prev,
+      ...prevSong,
+      isPlaying: true
+    }));
+  })
+  .catch(err => {
+    console.error("Failed to play:", err);
+    setCurrentSongData(prev => ({ ...prev, isPlaying: false }));
+  });
+
+}, [currentQueue, currentSongAudio, currentSongData, volume]);
 
   // Like a song function
  const toggleLike = async (song) => {
@@ -202,7 +248,7 @@ function App() {
       
     }
 
-    setSongs((prevSongs) =>
+    setCurrentQueue((prevSongs) =>
       prevSongs.map((s) =>
         s._id === song._id ? { ...s, isLiked: !s.isLiked } : s
       )
@@ -215,26 +261,28 @@ function App() {
 
   useEffect(() => {
     const handleSongEnd = () => {
-      if (getSongIndex(currentSongData._id) === songs.length - 1) {
+      if (!currentQueue || !currentQueue.length) return;
+      
+      if (currentQueue.findIndex(s => s._id === currentSongData._id) === currentQueue.length - 1) {
         skipSong(currentSongData, false);
-      } else skipSong(currentSongData);
+      } else {
+        skipSong(currentSongData);
+      }
     };
-
-    // Add event listener for the 'ended' event on the current audio element
+  
     if (currentSongAudio) {
       currentSongAudio.volume = volume;
       currentSongAudio.addEventListener("ended", handleSongEnd);
     }
-
-    // Cleanup the event listener when the component unmounts or when currentSongAudio changes
+  
     return () => {
       if (currentSongAudio) {
         currentSongAudio.removeEventListener("ended", handleSongEnd);
       }
     };
-  }, [currentSongAudio, currentSongData, songs]);
+  }, [currentSongAudio, currentSongData, currentQueue, skipSong, volume]);
 
-  useEffect(()=>{
+  useEffect(() => {
     const user = JSON.parse(localStorage.getItem("user"));
     let userId = null;
     if(user) {
@@ -242,6 +290,21 @@ function App() {
     } else {
       return;
     }
+
+    axios
+    .get(`http://localhost:5000/likedsongs/${userId}`)
+    .then((res) => {
+      setLikedSongsFront(res.data);
+
+      setCurrentQueue(prevQueue =>
+        prevQueue.map(song => ({
+          ...song,
+          isLiked: res.data.some(liked => liked._id === song._id)
+        }))
+      );
+    })
+    .catch((err) => console.error("Failed to fetch liked songs", err));
+
     axios
     .get(`http://localhost:5000/auth/${userId}`)
     .then((res) => {
@@ -270,9 +333,13 @@ function App() {
       volume,
       setVolume,
       userIcon,
+      setUser,
+      user,
       setUserIcon,
       likedSongsFront,
-      setLikedSongsFront
+      setLikedSongsFront,
+      setCurrentQueue,
+      currentQueue
     }}
   >
     {!hidePlayer && <Navbar setSearchQuery={setSearchQuery}/>}
@@ -294,6 +361,7 @@ function App() {
               </ProtectedRoute>
             } 
           />
+          <Route path="/login" element={<Login setUser={setUser} />} />
           <Route path="/likedSongs" element={<LikedSongs />} />
           <Route path="/playlists" element={<Playlists />} />
           <Route path="/playlists/:_id" element={<PlaylistDetail />} />

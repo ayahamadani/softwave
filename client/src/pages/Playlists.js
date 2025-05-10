@@ -1,10 +1,6 @@
 import {React, useState, useEffect } from 'react'
-import Navbar from '../components/Navbar/Navbar';
-import BottomPlayer from '../components/BottomPlayer/BottomPlayer';
 import { Link } from "react-router-dom";
 import axios from 'axios';
-
-import image from "../components/assets/images/download.jpg";
 
 export default function Playlists() {
   const [playlists, setPlaylists] = useState([]);
@@ -40,7 +36,7 @@ export default function Playlists() {
               color: "inherit"
             }}
           >
-            <img src={image} alt="" style={{ width: "80%", borderRadius: "15px", height: "80%", objectFit: "cover" }} />
+            <img src={playlist.playlistIcon} alt="" style={{ width: "80%", borderRadius: "15px", height: "80%", objectFit: "cover" }} />
             <h3>{playlist.name}</h3>
             <p style={{ color: "gray" }}>{playlist.songs.length} song(s)</p>
           </Link>

@@ -3,7 +3,8 @@ import SongContext from '../../components/context/SongContext';
 import axios from 'axios';
 import Navbar from '../../components/Navbar/Navbar';
 import styles from './Home.module.css';
-import image from "../../components/assets/images/download.jpg";
+import likedSongsCover from "../../components/assets/images/likedSongs.jpg";
+import playlistsCover from "../../components/assets/images/playlists.jpg"
 import { Link } from 'react-router-dom';
 
 export default function Home() {
@@ -13,6 +14,7 @@ export default function Home() {
       songs,
       setSongs,
       searchQuery,
+      likedSongsFront
     } = useContext(SongContext);
 
   useEffect(() => {
@@ -22,7 +24,8 @@ export default function Home() {
         .then((res) => {
           const songList = res.data.map(song => ({
             ...song,
-            isPlaying: false
+            isPlaying: false,
+            isLiked: false
           }));
           setSongs(songList);
         })
@@ -34,78 +37,87 @@ export default function Home() {
         .then((res) => {
           const songList = res.data.map(song => ({
             ...song,
-            isPlaying: false
+            isPlaying: false,
+            isLiked: false
           }));
           setSongs(songList);
         })
         .catch((err) => console.error("Failed to fetch songs:", err));
     }
-  }, [searchQuery]);
+  }, [searchQuery, setSongs]);
+
+  useEffect(() => {
+    const fetchAllSongs = async () => {
+      const res = await axios.get("http://localhost:5000/songs");
+      const allSongs = res.data;
   
-
-  // useEffect(() => {
-  //   if (!currentSongAudio) return;
-
-  //   const intervalId = setInterval(() => {
-  //     if (!currentSongAudio.paused) {
-  //       const current = currentSongAudio.currentTime;
-  //       const duration = currentSongAudio.duration || 0;
-  //       const remaining = duration - current;
-
-  //       setTime({
-  //         current,
-  //         duration,
-  //         remaining,
-  //       });
-  //       console.log(time);
-  //     }
-  //   }, 1000);
-
-  //   return () => clearInterval(intervalId);
-  // }, [currentSongAudio]);
+      const updatedSongs = allSongs.map(song => ({
+        ...song,
+        isLiked: likedSongsFront.some(liked => liked._id === song._id),
+      }));
   
-
-  // const setCurrentTimeValue = (time) => {
-  //   if (!currentSongAudio.isPlaying) {
-  //     currentSongAudio.currentTime = time;
-  //     setCurrentTime(time);
-  //   } else {
-  //     currentSongAudio.currentTime = time;
-  //     setCurrentTime(time);
-  //     currentSongAudio.play();
-  //   }
-  // };  
+      setSongs(updatedSongs);
+    };
+  
+    fetchAllSongs();
+  }, [likedSongsFront, setSongs]);
+  
 
   return (
-    <div>
-      <div style={{display: "flex"}}>
+    <div className={styles.homeContainer}>
+      <div className={styles.homeContentWrapper}>
         <div className={styles.homeSongsContainer}>
-          <p>Songs...</p>
-          <hr />
+          <p className={styles.sectionTitle}>Songs...</p>
+          <hr className={styles.divider} />
           {songs.map((song, index) => (
             <div key={song._id} className={styles.songItem}>
-              <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                <div>{index + 1}</div>
-                <img src={song.albumCover} alt="" className={styles.songAlbumCover}/>
-                <div>
-                  <strong>{song.name}</strong>
-                  <p>{song.artist}</p>
+              <div className={styles.songInfo}>
+                <div className={styles.songIndex}>{index + 1}</div>
+                <img 
+                  src={song.albumCover} 
+                  alt={song.name} 
+                  className={styles.songAlbumCover}
+                />
+                <div className={styles.songDetails}>
+                  <strong className={styles.songName}>{song.name}</strong>
+                  <p className={styles.songArtist}>{song.artist}</p>
                 </div>
               </div>
-              <div style={{ paddingRight: "0.5em"}}>
-                <i className={`fa-solid ${currentSongData.isPlaying && currentSongData._id === song._id ? "fa-pause" : "fa-play"}`} onClick={() => playSong(song)} style={{ cursor: "pointer" }}></i>
+              <div className={styles.songControls}>
+                <i 
+                  className={`fa-solid ${
+                    currentSongData.isPlaying && currentSongData._id === song._id 
+                      ? "fa-pause" 
+                      : "fa-play"
+                  } ${styles.playButton}`} 
+                  onClick={() => playSong(song, songs)} 
+                />
               </div>
             </div>
           ))}
         </div>
-        <div style={{ display: "flex", gap: "10%", justifyContent: "center", width: "50%"}}>
-          <Link to="/likedSongs" style={{ cursor: "pointer", textDecoration: "none", color: "black"}}>
-            <img src={image} alt="liked-songs-collection-cover" style={{borderRadius: "15px", width: "13em", cursor: "pointer"}}/>
-            <p style={{ cursor: "pointer", textDecoration: "none"}}>Liked Songs</p>
+        <div className={styles.featuredContent}>
+          <Link 
+            to="/likedSongs" 
+            className={styles.featuredLink}
+          >
+            <img 
+              src={likedSongsCover} 
+              alt="Liked songs collection" 
+              className={styles.featuredImage}
+            />
+            <p className={styles.featuredTitle}>Liked Songs</p>
           </Link>
-          <Link to="/playlists" style={{ cursor: "pointer", textDecoration: "none", color: "black"}}>
-            <img src={image} alt="liked-songs-collection-cover" style={{borderRadius: "15px", width: "13em", cursor: "pointer"}}/>
-            <p >Playlists</p>
+          <Link 
+            to="/playlists" 
+            className={styles.featuredLink}
+          >
+            <img 
+              src={playlistsCover} 
+              alt="Playlists collection" 
+              className={styles.featuredImage}
+            />
+            <p className={styles.featuredTitle}>Playlists</p>
           </Link>
         </div>
       </div>

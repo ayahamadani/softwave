@@ -9,7 +9,6 @@
     align-items: center;
     justify-content: space-between;
     height: 10em;
-    
 }
 
 .leftNav {
@@ -46,16 +45,24 @@
  
 .rightNav img {
     width: 100%;
-    border-radius: 33px;
-    border: solid rgb(0, 0, 0) 5px;
+    border-radius: 50%;
+    border: solid purple 2px;
 }
 
 .iconContainer {
     width: 10em;
     margin-right: 5em;
-    width: 4em;
-    
+    width: 70px;
+    height:70px;
+    overflow: hidden;
 }
+
+.iconContainer img{
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
 .iconContainer:hover {
     cursor: pointer;
     
@@ -80,6 +87,8 @@
   
 .songAlbumCover {
     width: 3em;
+    height: 3em;
+    object-fit: cover;
     border-radius: 10px;
 }
 
@@ -294,4 +303,184 @@
 
 .closeButton:hover {
   color: #000;
+}
+
+.homeContainer {
+  width: 100%;
+  padding: 1em;
+}
+
+.homeContentWrapper {
+  display: flex;
+  gap: 2em;
+}
+
+.homeSongsContainer {
+  flex: 1;
+  min-width: 0;
+}
+
+.sectionTitle {
+  font-size: 1.5em;
+  font-weight: bold;
+  margin-bottom: 0.5em;
+}
+
+.divider {
+  border: none;
+  height: 1px;
+  background-color: #ccc;
+  margin-bottom: 1em;
+}
+
+.songItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.8em 0;
+  border-bottom: 1px solid #eee;
+  transition: background-color 0.2s ease;
+}
+
+.songItem:hover {
+  background-color: #f5f5f5;
+}
+
+.songInfo {
+  display: flex;
+  align-items: center;
+  gap: 1em;
+  min-width: 0;
+}
+
+.songIndex {
+  width: 1.5em;
+  text-align: center;
+}
+
+.songAlbumCover {
+  width: 50px;
+  height: 50px;
+  object-fit: cover;
+  border-radius: 5px;
+  flex-shrink: 0;
+}
+
+.songDetails {
+  min-width: 0;
+}
+
+.songName {
+  font-size: 1em;
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.songArtist {
+  font-size: 0.8em;
+  color: #666;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.songControls {
+  padding-right: 1em;
+}
+
+.playButton {
+  cursor: pointer;
+  font-size: 1em;
+  padding-right: 0.7em;
+  transition: transform 0.2s ease;
+}
+
+.playButton:hover {
+  transform: scale(1.1);
+}
+
+.featuredContent {
+  display: flex;
+  flex-direction: row;
+  gap: 2em;
+  width: 30%;
+  flex-shrink: 0;
+  padding-right: 3em;
+  align-items: center;
+}
+
+.featuredLink {
+  text-decoration: none;
+  color: inherit;
+  transition: transform 0.2s ease;
+}
+
+.featuredLink:hover {
+  transform: translateY(-5px);
+}
+
+.featuredImage {
+  width: 100%;
+  height: auto;
+  border-radius: 15px;
+  aspect-ratio: 1/1;
+  object-fit: cover;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.featuredTitle {
+  margin-top: 0.5em;
+  font-weight: 600;
+  text-align: center;
+}
+
+/* Responsive styles */
+@media (max-width: 1024px) {
+  .homeContentWrapper {
+    gap: 1.5em;
+  }
+  
+  .featuredContent {
+    width: 250px;
+  }
+}
+
+@media (max-width: 768px) {
+  .homeContentWrapper {
+    flex-direction: column;
+  }
+  
+  .featuredContent {
+    width: 100%;
+    flex-direction: row;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  
+  .featuredLink {
+    width: calc(50% - 1em);
+  }
+}
+
+@media (max-width: 480px) {
+  .songAlbumCover {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .songName {
+    font-size: 0.9em;
+  }
+  
+  .songArtist {
+    font-size: 0.7em;
+  }
+  
+  .featuredLink {
+    width: 100%;
+    max-width: 250px;
+  }
 }

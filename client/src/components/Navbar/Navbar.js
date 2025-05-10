@@ -59,7 +59,7 @@ export default function Navbar({ setSearchQuery }) {
         </div>
         <div className={styles.iconContainer}>
           <img
-            src={userIcon}
+            src={userIcon || null}
             alt="user-icon"
             onClick={() => setShowDropdown((prev) => !prev)}
             style={{ cursor: "pointer" }}

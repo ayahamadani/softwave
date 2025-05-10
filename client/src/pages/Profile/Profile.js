@@ -1,23 +1,78 @@
-import { React, useEffect, useState, useContext } from 'react';
-import Navbar from '../../components/Navbar/Navbar';
+import { React, useRef, useContext } from 'react';
+import styles from './Profile.module.css';
 import SongContext from '../../components/context/SongContext';
+import axios from 'axios';
 
 export default function Profile() {
-    const { userIcon, setUserIcon } = useContext(SongContext);
-    const user = JSON.parse(localStorage.getItem("user"));
-    const [searchQuery, setSearchQuery] = useState("");
+  const { userIcon, setUserIcon } = useContext(SongContext);
+  const user = JSON.parse(localStorage.getItem("user"));
+  const fileInputRef = useRef();
+
+  const handleFileChange = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append("avatar", file);
+
+    try {
+      const userId = user.userId;
+      const response = await axios.post(
+        `http://localhost:5000/upload/${userId}/upload-avatar`,
+        formData,
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+        }
+      );
+      const newAvatarUrl = response.data.avatarUrl;
+      setUserIcon(newAvatarUrl);
+    } catch (error) {
+      console.error("Upload failed:", error);
+    }
+  };
 
   return (
-      <div>
-        <div style={{ marginLeft: "3em", gap: "1em", display: "flex", flexDirection: "column" }}>
-            <p>Profile...</p>
-            <hr style={{ width: "50%"}}/>
-            <p><strong>Icon:</strong></p>
-            <img src={userIcon} alt="user-icon" style={{borderRadius: "25px", width: "15em"}}/>
-            <button style={{width: "17em", borderRadius: "15px", border: "solid 2px purple", color: "purple", backgroundColor: "white", height: "2em"}}>Edit Icon</button>
-            <p><strong>Username:</strong> {user.username}</p>
-            <p><strong>User Type:</strong> { user.isAdmin ? "Admin " : "Normal"}</p>
+    <div className={styles.profileContainer}>
+      <h2>Profile</h2>
+      <hr className={styles.divider} />
+      
+      <div className={styles.avatarContainer}>
+        <div className={styles.avatarImageContainer}>
+          <img 
+            src={userIcon || null} 
+            alt="user-icon" 
+            className={styles.avatarImage} 
+          />
         </div>
+        
+        <button
+          onClick={() => fileInputRef.current.click()}
+          className={styles.changeAvatarButton}
+        >
+          Change Avatar
+        </button>
+      </div>
+      
+      <input
+        type="file"
+        accept="image/*"
+        ref={fileInputRef}
+        style={{ display: "none" }}
+        onChange={handleFileChange}
+      />
+      
+      <div className={styles.userInfoContainer}>
+        <div className={styles.infoRow}>
+          <span className={styles.infoLabel}>Username:</span>
+          <span>{user.username}</span>
+        </div>
+        <div className={styles.infoRow}>
+          <span className={styles.infoLabel}>User Type:</span>
+          <span className={user.isAdmin ? styles.adminText : ''}>
+            {user.isAdmin ? "Admin" : "Normal User"}
+          </span>
+        </div>
+      </div>
     </div>
-  )
+  );
 }

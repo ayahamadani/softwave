@@ -12,6 +12,7 @@ export default function AdminPanel() {
     const [songName, setSongName] = useState("");
     const [artist, setArtist] = useState("");
     const [genre, setGenre] = useState("");
+    const [albumCover, setAlbumCover] = useState("");
     const [users, setUsers] = useState([]);
     const [searchInput, setSearchInput] = useState("");
     const [filteredUsers, setFilteredUsers] = useState([]);
@@ -40,46 +41,39 @@ export default function AdminPanel() {
 
     const handleSubmit = async (e) => {
       e.preventDefault();
+      const user = JSON.parse(localStorage.getItem("user"));
+      const userId = user.userId;
+    
       const formData = new FormData();
-      formData.append("audio", songFile);
-      formData.append("image", imageFile);
-
-      console.log("About to upload:");
-      console.log("songFile:", songFile);
-      console.log("imageFile:", imageFile);
+      formData.append("songName", songName);
+      formData.append("artist", artist);
+      formData.append("genre", genre);
+      formData.append("albumCover", imageFile);
+      formData.append("songFile", songFile);
     
       try {
-        const res = await fetch("http://localhost:5000/upload", {
-          method: "POST",
-          body: formData,
-        });
+        const response = await axios.post(
+          `http://localhost:5000/upload/${userId}/upload-song`, 
+          formData, 
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
     
-        const data = await res.json();
-        console.log("Uploaded URLs:", data);
-    
-        // Then post metadata to MongoDB
-        await axios.post("http://localhost:5000/songs", {
-          name: songName,
-          artist,
-          genre,
-          audioUrl: data.audioUrl,
-          albumCover: data.imageUrl
-        });
-    
-        alert("Song added!");
-
-        // Reset form
+        console.log("Song uploaded:", response.data.song);
         setSongName("");
         setArtist("");
         setGenre("");
+        setImage(null);
         setSongFile(null);
         setImageFile(null);
-        setImage(null);
       } catch (err) {
-        console.error("Upload error:", err);
+        console.error("Upload failed:", err.response?.data || err.message);
       }
     };
-    
+
     useEffect(() => {
       const fetchUsers = async () => {
         const user = JSON.parse(localStorage.getItem("user"));
@@ -118,79 +112,98 @@ export default function AdminPanel() {
 
   
   return (
-    <div style={{display: "flex", justifyContent: "space-between"}}>
-        <div style={{width: "50%"}}>
-           <form  onSubmit={handleSubmit} className={styles.addSongForm}>
-            <p>Add a Song</p>
-              <input type="text" placeholder='song name' value={songName} onChange={(e) => setSongName(e.target.value)}/>
-              <input type="text" placeholder='artist' value={artist} onChange={(e) => setArtist(e.target.value)}/>
-              <select name="" id="" value={genre} onChange={(e) => {setGenre(e.target.value); console.log(e.target.value);}}>
-                  <option value="" disabled>genre</option>
-                  <option value="genre1">genre1</option>
-                  <option value="genre2">genre2</option>
-                  <option value="genre3">genre3</option>
-                  <option value="genre4">genre4</option>
-              </select>
-              <div id={styles.labelContainer}>
-              <label htmlFor="fileInput" style={{ cursor: "pointer", fontSize: "13px", color: "gray" }}>Add an album cover</label>
-              </div>
-              <input 
-                  id="fileInput"
-                  type="file"
-                  accept="image/*"
-                  onChange={handleImageChange}
-                  style={{ display: "none" }} // Hide the default file input
-              />
-              {/* TODO */}
-              <input
-               type="file"
-               accept="audio/*"
-               placeholder='song file'
-               onChange={handleSongFile}
-               
-               />
-               <button type="submit">Submit</button>
-           </form>
-        </div>
-      <div style={{width: "50%"}}>
+    <div className={styles.container}>
+      <div className={styles.formContainer}>
+        <form onSubmit={handleSubmit} className={styles.form}>
+          <h2 className={styles.formTitle}>Upload New Song</h2>
+          
+          <input 
+            type="text" 
+            placeholder="Song name" 
+            value={songName} 
+            onChange={(e) => setSongName(e.target.value)} 
+            className={styles.inputField}
+          />
+          
+          <input 
+            type="text" 
+            placeholder="Artist" 
+            value={artist} 
+            onChange={(e) => setArtist(e.target.value)} 
+            className={styles.inputField}
+          />
+          
+          <select 
+            value={genre} 
+            onChange={(e) => setGenre(e.target.value)}
+            className={styles.selectField}
+          >
+            <option value="" disabled>Genre</option>
+            <option value="Jazz">Jazz</option>
+            <option value="Japanese">Japanese</option>
+            <option value="Classical">Classical</option>
+          </select>
+
+          <label htmlFor="albumCover" className={styles.fileInputLabel}>Album Cover</label>
+          <input 
+            type="file" 
+            id="albumCover" 
+            accept="image/*" 
+            onChange={handleImageChange}
+            className={styles.fileInput}
+          />
+
+          <label htmlFor="songFile" className={styles.fileInputLabel}>Song File</label>
+          <input 
+            type="file" 
+            id="songFile" 
+            accept="audio/*" 
+            onChange={handleSongFile}
+            className={styles.fileInput}
+          />
+          
+          <button type="submit" className={styles.submitButton}>Upload</button>
+        </form>
+      </div>
+      
+      <div className={styles.adminPanel}>
         <div>
-          <p>Make user an admin...</p>
-          <hr style={{width: "30em", marginBottom: "2em"}}/>
+          <p className={styles.adminTitle}>Make user an admin...</p>
+          <hr className={styles.divider} />
         </div>
+        
         <div>
           {users.length > 0 ? (
-            <>
-              <div style={{ display: "flex", flexDirection: "row", gap: "1em", width: "100%" }}>
-                {filteredUsers.map((user, index) => (
-                <div
-                  style={{
-                    height: "15em",
-                    width: "15em",
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "center",
-                    marginTop: "1em",
-                    cursor: "pointer",
-                    textDecoration: "none",
-                    color: "inherit"
-                  }}
-                >
-                  <img src={userIcon} alt="user-icon" style={{ width: "80%", borderRadius: "15px", height: "80%", objectFit: "cover", alignSelf: "center" }} />
-                  <h3 style={{textAlign: "center"}}>{user.username}</h3>
-                  <p style={{ color: "gray", textAlign: "center", marginTop: "0.5em" }}>{user.isAdmin ? "Admin" : "Normal"} User</p>
-                  <input onClick={() => toggleAdmin(user._id)} style={{borderRadius: "7px", padding: "0.5em 1em", marginTop: "0.5em", border: "solid 2px purple", color: "purple", background: "none", cursor: "pointer" }} type="button" value={user.isAdmin? "Remove Admin" : "Make Admin"}/>
+            <div className={styles.usersGrid}>
+              {filteredUsers.map((user) => (
+                <div key={user._id} className={styles.userCard}>
+                  <img src={user.icon} alt="user-icon" className={styles.userIcon} />
+                  <h3 className={styles.userName}>{user.username}</h3>
+                  <p className={styles.userRole}>{user.isAdmin ? "Admin" : "Normal"} User</p>
+                  <button
+                    onClick={() => toggleAdmin(user._id)} 
+                    className={styles.adminToggleButton}
+                  >
+                    {user.isAdmin ? "Remove Admin" : "Make Admin"}
+                  </button>
                 </div>
-                ))}
-              </div>
-            </>
+              ))}
+            </div>
           ) : (
-            <h2 style={{ marginTop: "2em" }}>No users Found</h2>
+            <h2 className={styles.noUsers}>No users Found</h2>
           )}
-        </div>
-        <div style={{paddingTop: "3em"}}>
-          <input style={{borderRadius: "7px", padding: "0.5em 1em", marginTop: "0.5em", border: "solid 2px purple", background: "none" }} type="text" placeholder="search for a user" value={searchInput} onChange={(e) => setSearchInput(e.target.value)}/>
+          
+          <div className={styles.searchContainer}>
+            <input 
+              type="text" 
+              placeholder="Search for a user..." 
+              value={searchInput} 
+              onChange={(e) => setSearchInput(e.target.value)}
+              className={styles.searchInput}
+            />
+          </div>
         </div>
       </div>
     </div>
-  )
+  );
 }

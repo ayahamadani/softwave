@@ -1,16 +1,20 @@
-import { React, useState, useEffect } from 'react';
+import { React, useState, useEffect, useContext } from 'react';
 import { Link, useNavigate } from "react-router-dom";
 import styles from "./Login.module.css";
+import SongContext from '../../components/context/SongContext';
+
 
 export default function Login() {
   const navigate = useNavigate();
+  const {setUser} = useContext(SongContext);
+  
 
   useEffect(() => {
     const user = localStorage.getItem("user");
     if (user) {
       navigate("/home", { replace: true });
     }
-  }, []);
+  }, [navigate]);
 
   const [ formData, setFormData ] = useState({
     username: '',
@@ -62,7 +66,8 @@ export default function Login() {
         return;
       }
       localStorage.setItem("user", JSON.stringify(data));
-      navigate("/home", { replace: true });
+      setUser(data);
+      navigate("/adminPanel");
     } catch (error) {
       setError(error.message);
     }

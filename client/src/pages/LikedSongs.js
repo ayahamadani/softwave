@@ -41,7 +41,7 @@ export default function LikedSongs() {
         };
       
         fetchLikedSongs();
-      }, [searchQuery]);
+      }, [searchQuery, setLikedSongsFront]);
 
     return (
       <div>
@@ -59,7 +59,7 @@ export default function LikedSongs() {
                     </div>
                 </div>
 
-                <i className={`fa-solid ${currentSongData.isPlaying && currentSongData._id === song._id ? "fa-pause" : "fa-play"}`} onClick={() => playSong(song)} style={{ cursor: "pointer" }}></i>
+                <i className={`fa-solid ${currentSongData.isPlaying && currentSongData._id === song._id ? "fa-pause" : "fa-play"}`} onClick={() => playSong(song, likedSongsFront)} style={{ cursor: "pointer", paddingRight: "1em" }}></i>
                 </div>
             )) : <div><h2 style={{marginTop: "1em"}}>You have no Liked songs so far</h2></div>}
         </div>
