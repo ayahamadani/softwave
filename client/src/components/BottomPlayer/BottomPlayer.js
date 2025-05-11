@@ -84,7 +84,7 @@ export default function BottomPlayer() {
           return;
         }
     
-        const res = await axios.post("http://localhost:5000/playlists", {
+        const res = await axios.post("https://softwave-music-player.onrender.com/playlists", {
           name: playlistName,
           userId: user.userId,
           songId: currentSongData._id
@@ -102,7 +102,7 @@ export default function BottomPlayer() {
     const fetchUserPlaylists = async () => {
       const user = JSON.parse(localStorage.getItem("user"));
       try {
-        const res = await axios.get(`http://localhost:5000/playlists/user/${user.userId}`);
+        const res = await axios.get(`https://softwave-music-player.onrender.com/playlists/user/${user.userId}`);
         setUserPlaylists(res.data);
         setShowPlaylistSelect(true);
       } catch (err) {
@@ -112,7 +112,7 @@ export default function BottomPlayer() {
 
     const addToPlaylist = async (playlistId) => {
       try {
-        await axios.put(`http://localhost:5000/playlists/${playlistId}/add`, {
+        await axios.put(`https://softwave-music-player.onrender.com/playlists/${playlistId}/add`, {
           songId: currentSongData._id,
         });
         setShowPlaylistSelect(false);

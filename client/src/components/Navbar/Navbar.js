@@ -37,7 +37,7 @@ export default function Navbar({ setSearchQuery }) {
     const user = JSON.parse(localStorage.getItem("user"));
     const userId = user.userId;
     axios
-    .get(`http://localhost:5000/auth/${userId}`)
+    .get(`https://softwave-music-player.onrender.com/auth/${userId}`)
     .then((res) => {
       setUserIcon(res.data.icon);
     })

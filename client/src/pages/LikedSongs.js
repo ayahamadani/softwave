@@ -23,7 +23,7 @@ export default function LikedSongs() {
         const fetchLikedSongs = async () => {
           try {
             // Get full song documents already populated by backend
-            const res = await axios.get(`http://localhost:5000/likedsongs/${user.userId}`);
+            const res = await axios.get(`https://softwave-music-player.onrender.com/likedsongs/${user.userId}`);
             const likedSongs = res.data
               .filter(song =>
                 song.name.toLowerCase().includes(searchQuery.trim().toLowerCase())

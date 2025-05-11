@@ -222,13 +222,13 @@ const rewindSong = useCallback((song) => {
 
     if (song.isLiked) {
       // Unlike the song
-      await axios.delete(`http://localhost:5000/likedsongs/${user.userId}/${song._id}`);
+      await axios.delete(`https://softwave-music-player.onrender.com/likedsongs/${user.userId}/${song._id}`);
 
       // Remove from likedSongsFront
       updatedLikedSongs = likedSongsFront.filter((s) => s._id !== song._id);
     } else {
       // Like the song
-      await axios.post(`http://localhost:5000/likedsongs/${user.userId}/${song._id}`);
+      await axios.post(`https://softwave-music-player.onrender.com/likedsongs/${user.userId}/${song._id}`);
 
       // Add to likedSongsFront
       updatedLikedSongs = [...likedSongsFront, { ...song, isLiked: true }];
@@ -292,7 +292,7 @@ const rewindSong = useCallback((song) => {
     }
 
     axios
-    .get(`http://localhost:5000/likedsongs/${userId}`)
+    .get(`https://softwave-music-player.onrender.com/likedsongs/${userId}`)
     .then((res) => {
       setLikedSongsFront(res.data);
 
@@ -306,7 +306,7 @@ const rewindSong = useCallback((song) => {
     .catch((err) => console.error("Failed to fetch liked songs", err));
 
     axios
-    .get(`http://localhost:5000/auth/${userId}`)
+    .get(`https://softwave-music-player.onrender.com/auth/${userId}`)
     .then((res) => {
       setUserIcon(res.data.icon);
     })

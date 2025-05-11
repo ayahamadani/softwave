@@ -53,7 +53,7 @@ export default function AdminPanel() {
     
       try {
         const response = await axios.post(
-          `http://localhost:5000/upload/${userId}/upload-song`, 
+          `https://softwave-music-player.onrender.com/upload/${userId}/upload-song`, 
           formData, 
           {
             headers: {
@@ -80,7 +80,7 @@ export default function AdminPanel() {
         if (!user) return;
     
         try {
-          const res = await axios.get("http://localhost:5000/auth");
+          const res = await axios.get("https://softwave-music-player.onrender.com/auth");
           const fetchedUsers = res.data;
           setUsers(fetchedUsers);
           setFilteredUsers(fetchedUsers);
@@ -102,8 +102,8 @@ export default function AdminPanel() {
     
     const toggleAdmin = async (userId) => {
       try{
-        await axios.put(`http://localhost:5000/auth/${userId}/makeAdmin`);
-        const res = await axios.get("http://localhost:5000/auth");
+        await axios.put(`https://softwave-music-player.onrender.com/auth/${userId}/makeAdmin`);
+        const res = await axios.get("https://softwave-music-player.onrender.com/auth");
         setUsers(res.data);
         } catch (err) {
           console.error("Error toggling Adminship", err);

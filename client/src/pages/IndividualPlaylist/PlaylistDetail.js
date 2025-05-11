@@ -16,7 +16,7 @@ export default function PlaylistDetail() {
     const fetchPlaylist = async () => {
       const user = JSON.parse(localStorage.getItem("user"));
       try {
-        const res = await axios.get(`http://localhost:5000/playlists/user/${user.userId}`);
+        const res = await axios.get(`https://softwave-music-player.onrender.com/playlists/user/${user.userId}`);
         const found = res.data.find((p) => p._id === _id);
         setPlaylist(found);
         const songList = found.songs.map(song => ({
@@ -46,7 +46,7 @@ export default function PlaylistDetail() {
       const user = JSON.parse(localStorage.getItem("user"));
       const userId = user.userId;
       const response = await axios.post(
-        `http://localhost:5000/upload/${userId}/${playlist._id}`,
+        `https://softwave-music-player.onrender.com/upload/${userId}/${playlist._id}`,
         formData,
         {
           headers: { "Content-Type": "multipart/form-data" },

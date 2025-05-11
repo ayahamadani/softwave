@@ -20,7 +20,7 @@ export default function Home() {
   useEffect(() => {
     if (searchQuery.trim() !== "") {
       axios
-        .get(`http://localhost:5000/songs/search?name=${encodeURIComponent(searchQuery)}`)
+        .get(`https://softwave-music-player.onrender.com/songs/search?name=${encodeURIComponent(searchQuery)}`)
         .then((res) => {
           const songList = res.data.map(song => ({
             ...song,
@@ -33,7 +33,7 @@ export default function Home() {
     } else {
       // If search is cleared, fetch all songs
       axios
-        .get("http://localhost:5000/songs")
+        .get("https://softwave-music-player.onrender.com/songs")
         .then((res) => {
           const songList = res.data.map(song => ({
             ...song,
@@ -48,7 +48,7 @@ export default function Home() {
 
   useEffect(() => {
     const fetchAllSongs = async () => {
-      const res = await axios.get("http://localhost:5000/songs");
+      const res = await axios.get("https://softwave-music-player.onrender.com/songs");
       const allSongs = res.data;
   
       const updatedSongs = allSongs.map(song => ({

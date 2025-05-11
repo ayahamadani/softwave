@@ -7,7 +7,7 @@ export default function Playlists() {
 
   useEffect(() => {
       const user = JSON.parse(localStorage.getItem("user"));
-      axios.get(`http://localhost:5000/playlists/user/${user.userId}`)
+      axios.get(`https://softwave-music-player.onrender.com/playlists/user/${user.userId}`)
       .then((res) => {
         setPlaylists(res.data);
       });

@@ -18,7 +18,7 @@ export default function Profile() {
     try {
       const userId = user.userId;
       const response = await axios.post(
-        `http://localhost:5000/upload/${userId}/upload-avatar`,
+        `https://softwave-music-player.onrender.com/upload/${userId}/upload-avatar`,
         formData,
         {
           headers: { "Content-Type": "multipart/form-data" },
