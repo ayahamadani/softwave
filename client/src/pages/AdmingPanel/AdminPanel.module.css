@@ -12,13 +12,15 @@
 .container {
     display: flex;
     justify-content: space-between;
+    padding: 10em 4em;
   }
   
   .formContainer {
     width: 50%;
-    padding: 0 2em;
+    padding: 0em 1em;
     display: flex;
     justify-content: center;
+    align-items: flex-start;
   }
   
   .form {
@@ -26,11 +28,12 @@
     flex-direction: column;
     gap: 1.2em;
     padding: 2em;
+    margin-top: 6rem;;
     border-radius: 15px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     background-color: #fff;
     width: 70%;
-    align-self: center;
+    align-self: start;
   }
   
   .formTitle {
@@ -91,7 +94,7 @@
   
   /* Right side styles */
   .adminPanel {
-    width: 50%;
+    width: 55%;
   }
   
   .adminTitle {
@@ -111,7 +114,6 @@
   }
   
   .userCard {
-    width: 15em;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -119,6 +121,7 @@
     cursor: pointer;
     text-decoration: none;
     color: inherit;
+    margin-right: 1em;
   }
   
   .userIcon {
@@ -163,7 +166,7 @@
 .usersGrid {
   display: grid;
   gap: 1.5rem;
-  padding: 1rem;
+  padding: 1rem 0em;
 }
 
 .userCard {
@@ -225,7 +228,7 @@
 }
 
 .searchContainer {
-  padding-top: 3rem;
+  padding-top: 1rem;
   width: 100%;
   display: flex;
 }

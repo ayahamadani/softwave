@@ -60,7 +60,7 @@ export default function PlaylistDetail() {
   };
 
   return (
-    <div style={{ padding: "2em", marginLeft: "3em", display: "flex", flexDirection: "column" }}>
+    <div style={{ padding: "8em 2em", marginLeft: "3em", display: "flex", flexDirection: "column" }}>
       <img src={playlist.playlistIcon} alt="playlist-icon" style={{width: "15em", height: "15em", borderRadius: "15px", objectFit: "cover"}}/>
       <button 
         style={{color: "purple", width: "13em", margin: "2em 1em", height: "2em", borderRadius: "15px", background: "none", cursor: "pointer"}} 
@@ -80,7 +80,7 @@ export default function PlaylistDetail() {
        {playlistSongs.map((song, index) => (
             <div key={song._id} className={styles.songItem} style={{width: "50%"}}>
                 <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                    <div>{index + 1}</div>
+                    <div style={{ padding: "0em 1.5em"}}>{index + 1}</div>
                     <img src={song.albumCover} alt="" className={styles.songAlbumCover}/>
                     <div>
                     <strong>{song.name}</strong>
@@ -88,7 +88,7 @@ export default function PlaylistDetail() {
                     </div>
                 </div>
                 <div style={{ paddingRight: "0.5em"}}>
-                    <i className={`fa-solid ${currentSongData.isPlaying && currentSongData._id === song._id ? "fa-pause" : "fa-play"}`} onClick={() => playSong(song, playlistSongs)} style={{ cursor: "pointer" }}></i>
+                    <i className={`fa-solid ${currentSongData.isPlaying && currentSongData._id === song._id ? "fa-pause" : "fa-play"}`} onClick={() => playSong(song, playlistSongs)} style={{ cursor: "pointer", paddingRight: "2em" }}></i>
                 </div>
             </div>
         ))}

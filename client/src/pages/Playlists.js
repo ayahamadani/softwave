@@ -1,6 +1,7 @@
-import {React, useState, useEffect } from 'react'
+import {React, useState, useEffect, useContext } from 'react'
 import { Link } from "react-router-dom";
 import axios from 'axios';
+import Loader from '../components/Loader/Loader';
 
 export default function Playlists() {
   const [playlists, setPlaylists] = useState([]);
@@ -14,13 +15,13 @@ export default function Playlists() {
   }, []);
 
   return (
-    <div style={{ padding: "0em 4em"}}>
+    <div style={{ padding: "8em 4em"}}>
     {playlists.length > 0 ? (
       <>
         <p>Playlists</p>
-        <hr style={{ margin: "0.5em 0em", width: "50%" }}/>
+        <hr style={{margin: "0.5em 0em", width: "100%", border: "1px solid #eee"}}/>
         <div style={{ display: "flex", flexDirection: "row", gap: "1em", width: "100%" }}>
-          {playlists.map((playlist, index) => (
+          {playlists.map((playlist) => (
            <Link
             to={`/playlists/${encodeURIComponent(playlist._id)}`}
             key={playlist._id}
@@ -44,7 +45,7 @@ export default function Playlists() {
         </div>
       </>
     ) : (
-      <h2 style={{ marginTop: "2em" }}>You have no playlists for now...</h2>
+      <Loader />
     )}
   </div>
   )

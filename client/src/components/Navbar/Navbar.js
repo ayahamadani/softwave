@@ -1,7 +1,6 @@
 import {React, useState, useRef, useEffect, useContext } from 'react';
 import styles from '../../pages/Home/Home.module.css';
 import { Link } from 'react-router-dom';
-import LikedSongs from '../../pages/LikedSongs';
 import axios from 'axios';
 import SongContext from '../../components/context/SongContext';
 
@@ -47,15 +46,15 @@ export default function Navbar({ setSearchQuery }) {
   return (
     <div className={styles.navbarContainer}>
       <div className={styles.leftNav}>
-        <Link to="/home"><h1>Soundwave</h1></Link>
+        <Link to="/home" style={{ color: "white"}}><h1>Softwave</h1></Link>
         <input type="text" placeholder='search for a song' onChange={handleInputChange} ref={inputRef} id="navbarSearchInput"/>
       </div>
 
       <div className={styles.rightNav}>
         <div>
-          <Link to="/home">Home</Link>
-          <Link to="/likedSongs">Liked Songs</Link>
-          <Link to="/playlists">Playlists</Link>
+          <Link to="/home" style={{ color: "white"}}>Home</Link>
+          <Link to="/likedSongs" style={{ color: "white"}}>Liked Songs</Link>
+          <Link to="/playlists" style={{ color: "white"}}>Playlists</Link>
         </div>
         <div className={styles.iconContainer}>
           <img

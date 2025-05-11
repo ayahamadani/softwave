@@ -8,19 +8,23 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    height: 10em;
+    height: 6em;
+    position: fixed;
+    background: #370537;
+    width: 100%;
+    border-radius: 0px 0px 15px 15px;
 }
 
 .leftNav {
     display: flex;
     align-items: center;
-    width: 32em;
+    width: 38em;
 }
 
 .leftNav a {
     text-decoration: none;
     color: black;
-    margin: 2em;
+    margin: 0em 2em;
   }
 
 .leftNav input {
@@ -70,7 +74,7 @@
 
 .homeSongsContainer {
     width: 50%;
-    padding: 0em 4em;
+    padding: 8em 4em;
 }
 
 .songItem {
@@ -308,6 +312,7 @@
 .homeContainer {
   width: 100%;
   padding: 1em;
+  height: 100vh;
 }
 
 .homeContentWrapper {
@@ -356,6 +361,7 @@
 .songIndex {
   width: 1.5em;
   text-align: center;
+  padding: 0em 1.5em;
 }
 
 .songAlbumCover {
@@ -408,8 +414,8 @@
   gap: 2em;
   width: 30%;
   flex-shrink: 0;
-  padding-right: 3em;
-  align-items: center;
+  padding: 12em 4em;
+  align-items: start;
 }
 
 .featuredLink {
@@ -428,6 +434,7 @@
   border-radius: 15px;
   aspect-ratio: 1/1;
   object-fit: cover;
+  object-position: left;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 

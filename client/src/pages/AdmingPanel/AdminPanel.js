@@ -142,6 +142,7 @@ export default function AdminPanel() {
             <option value="Jazz">Jazz</option>
             <option value="Japanese">Japanese</option>
             <option value="Classical">Classical</option>
+            <option value="Spanish">Spanish</option>
           </select>
 
           <label htmlFor="albumCover" className={styles.fileInputLabel}>Album Cover</label>
@@ -169,10 +170,10 @@ export default function AdminPanel() {
       <div className={styles.adminPanel}>
         <div>
           <p className={styles.adminTitle}>Make user an admin...</p>
-          <hr className={styles.divider} />
+          <hr style={{margin: "0.5em 0em", width: "100%", border: "1px solid #eee"}}/>
         </div>
         
-        <div>
+        <div style={{display: "flex", flexDirection: "column-reverse"}}>
           {users.length > 0 ? (
             <div className={styles.usersGrid}>
               {filteredUsers.map((user) => (

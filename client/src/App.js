@@ -339,7 +339,9 @@ const rewindSong = useCallback((song) => {
       likedSongsFront,
       setLikedSongsFront,
       setCurrentQueue,
-      currentQueue
+      currentQueue,
+      loading, 
+      setLoading
     }}
   >
     {!hidePlayer && <Navbar setSearchQuery={setSearchQuery}/>}

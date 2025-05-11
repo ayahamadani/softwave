@@ -127,7 +127,7 @@ export default function BottomPlayer() {
       <div className={styles.stickyBottom}>
         <div style={{display: "flex", gap: "0.7em"}}>
             <img src={currentSongData.albumCover} alt="currently-playing-song" style={{ width: "5em", height: "5em", objectFit: "cover" }}/>
-            <div style={{width: "6em"}} className={styles.white}>
+            <div className={styles.white}>
             <strong>{currentSongData.name}</strong>
             <p>{currentSongData.artist}</p>
             </div>

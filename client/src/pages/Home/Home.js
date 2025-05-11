@@ -68,7 +68,7 @@ export default function Home() {
       <div className={styles.homeContentWrapper}>
         <div className={styles.homeSongsContainer}>
           <p className={styles.sectionTitle}>Songs...</p>
-          <hr className={styles.divider} />
+          <hr style={{margin: "0.5em 0em", width: "100%", border: "1px solid #eee"}}/>
           {songs.map((song, index) => (
             <div key={song._id} className={styles.songItem}>
               <div className={styles.songInfo}>

@@ -47,11 +47,11 @@ export default function LikedSongs() {
       <div>
         <div className={styles.homeSongsContainer}>
             <p>Liked Songs...</p>
-            <hr />
+            <hr style={{margin: "0.5em 0em", width: "100%", border: "1px solid #eee"}}/>
             {likedSongsFront.length > 0 ? likedSongsFront.map((song, index) => (
                 <div key={song._id} className={styles.songItem}>
                 <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                    <div>{index + 1}</div>
+                    <div className={styles.songIndex}>{index + 1}</div>
                     <img src={song.albumCover} alt="" className={styles.songAlbumCover}/>
                     <div>
                     <strong>{song.name}</strong>
@@ -59,7 +59,7 @@ export default function LikedSongs() {
                     </div>
                 </div>
 
-                <i className={`fa-solid ${currentSongData.isPlaying && currentSongData._id === song._id ? "fa-pause" : "fa-play"}`} onClick={() => playSong(song, likedSongsFront)} style={{ cursor: "pointer", paddingRight: "1em" }}></i>
+                <i className={`fa-solid ${currentSongData.isPlaying && currentSongData._id === song._id ? "fa-pause" : "fa-play"}`} onClick={() => playSong(song, likedSongsFront)} style={{ cursor: "pointer", paddingRight: "2em" }}></i>
                 </div>
             )) : <div><h2 style={{marginTop: "1em"}}>You have no Liked songs so far</h2></div>}
         </div>
