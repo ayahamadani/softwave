@@ -1,52 +1,66 @@
-import {React, useState, useEffect, useContext } from 'react'
+import { React, useState, useEffect } from 'react';
 import { Link } from "react-router-dom";
 import axios from 'axios';
 import Loader from '../components/Loader/Loader';
 
 export default function Playlists() {
   const [playlists, setPlaylists] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-      const user = JSON.parse(localStorage.getItem("user"));
-      axios.get(`https://softwave-music-player.onrender.com/playlists/user/${user.userId}`)
+    const user = JSON.parse(localStorage.getItem("user"));
+    axios.get(`https://softwave-music-player.onrender.com/playlists/user/${user.userId}`)
       .then((res) => {
         setPlaylists(res.data);
-      });
+        setLoading(false);
+      })
+      .catch(() => setLoading(false));
   }, []);
 
+  if (loading) {
+    return <Loader />;
+  }
+
   return (
-    <div style={{ padding: "8em 4em"}}>
-    {playlists.length > 0 ? (
-      <>
-        <p>Playlists</p>
-        <hr style={{margin: "0.5em 0em", width: "100%", border: "1px solid #eee"}}/>
-        <div style={{ display: "flex", flexDirection: "row", gap: "1em", width: "100%" }}>
+    <div className="playlists-page">
+      <div className="playlists-header">
+        <h1>Your Playlists</h1>
+        <div className="divider"></div>
+      </div>
+      
+      {playlists.length > 0 ? (
+        <div className="playlists-grid">
           {playlists.map((playlist) => (
-           <Link
-            to={`/playlists/${encodeURIComponent(playlist._id)}`}
-            key={playlist._id}
-            style={{
-              height: "15em",
-              width: "15em",
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "center",
-              margin: "1em",
-              cursor: "pointer",
-              textDecoration: "none",
-              color: "inherit"
-            }}
-          >
-            <img src={playlist.playlistIcon} alt="" style={{ width: "80%", borderRadius: "15px", height: "80%", objectFit: "cover" }} />
-            <h3>{playlist.name}</h3>
-            <p style={{ color: "gray" }}>{playlist.songs.length} song(s)</p>
-          </Link>
+            <Link
+              to={`/playlists/${encodeURIComponent(playlist._id)}`}
+              key={playlist._id}
+              className="playlist-card"
+            >
+              <div className="image-container">
+                <img 
+                  src={playlist.playlistIcon || '/default-playlist.png'} 
+                  alt={playlist.name}
+                  onError={(e) => {
+                    e.target.onerror = null; 
+                    e.target.src = '/default-playlist.png';
+                  }}
+                />
+              </div>
+              <div className="playlist-info">
+                <h3>{playlist.name}</h3>
+                <p>{playlist.songs?.length || 0} {playlist.songs?.length === 1 ? 'song' : 'songs'}</p>
+              </div>
+            </Link>
           ))}
         </div>
-      </>
-    ) : (
-      <Loader />
-    )}
-  </div>
-  )
+      ) : (
+        <div className="empty-state">
+          <p>You don't have any playlists yet</p>
+          <Link to="/create-playlist" className="create-btn">
+            Create your first playlist
+          </Link>
+        </div>
+      )}
+    </div>
+  );
 }

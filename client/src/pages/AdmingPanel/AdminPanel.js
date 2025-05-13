@@ -1,6 +1,5 @@
 import { React, useEffect, useState, useContext } from 'react';
 import styles from "./AdminPanel.module.css";
-import Navbar from '../../components/Navbar/Navbar';
 import SongContext from '../../components/context/SongContext';
 import axios from 'axios';
 
@@ -143,6 +142,7 @@ export default function AdminPanel() {
             <option value="Japanese">Japanese</option>
             <option value="Classical">Classical</option>
             <option value="Spanish">Spanish</option>
+            <option value="Video Games">Video Games</option>
           </select>
 
           <label htmlFor="albumCover" className={styles.fileInputLabel}>Album Cover</label>

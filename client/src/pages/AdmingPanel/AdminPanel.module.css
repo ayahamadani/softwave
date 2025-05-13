@@ -1,288 +1,185 @@
-.addSongForm {
-    display: flex;
-    flex-direction: column;
-    margin-left: 5em;
-    gap: 1em;
-}
-
-#labelContainer {
-    border: solid 1px black;
-}
-
 .container {
-    display: flex;
-    justify-content: space-between;
-    padding: 10em 4em;
-  }
-  
-  .formContainer {
-    width: 50%;
-    padding: 0em 1em;
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-  }
-  
-  .form {
-    display: flex;
-    flex-direction: column;
-    gap: 1.2em;
-    padding: 2em;
-    margin-top: 6rem;;
-    border-radius: 15px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    background-color: #fff;
-    width: 70%;
-    align-self: start;
-  }
-  
-  .formTitle {
-    color: purple;
-    margin-bottom: 0.5em;
-    text-align: center;
-  }
-  
-  .inputField {
-    padding: 0.8em 1em;
-    border-radius: 7px;
-    border: solid 2px #e0e0e0;
-    font-size: 1em;
-    outline: none;
-    transition: border 0.3s;
-  }
-  
-  .inputField:focus {
-    border: solid 2px purple;
-  }
-  
-  .selectField {
-    composes: inputField;
-    background-color: white;
-    cursor: pointer;
-    font-weight: 500;
-    color: #555;
-  }
-  
-  .fileInputLabel {
-    display: block;
-    margin-bottom: 0.5em;
-    font-weight: 500;
-    color: #555;
-  }
-  
-  .fileInput {
-    width: 100%;
-  }
-  
-  .submitButton {
-    padding: 0.8em 1em;
-    border-radius: 7px;
-    border: solid 2px purple;
-    color: purple;
-    background: none;
-    cursor: pointer;
-    font-size: 1em;
-    font-weight: 500;
-    transition: all 0.3s;
-    margin-top: 1em;
-  }
-  
-  .submitButton:hover {
-    background-color: purple;
-    color: white;
-  }
-  
-  /* Right side styles */
-  .adminPanel {
-    width: 55%;
-  }
-  
-  .adminTitle {
-    margin-bottom: 1em;
-  }
-  
-  .divider {
-    width: 30em;
-    margin-bottom: 2em;
-  }
-  
-  .usersGrid {
-    display: flex;
-    flex-direction: row;
-    gap: 1em;
-    width: 100%;
-  }
-  
-  .userCard {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    margin-top: 1em;
-    cursor: pointer;
-    text-decoration: none;
-    color: inherit;
-    margin-right: 1em;
-  }
-  
-  .userIcon {
-    width: 80%;
-    border-radius: 15px;
-    height: 80%;
-    object-fit: cover;
-    align-self: center;
-  }
-  
-  .userName {
-    text-align: center;
-  }
-  
-  .userRole {
-    color: gray;
-    text-align: center;
-    margin-top: 0.5em;
-  }
-  
-  .adminToggleButton {
-    border-radius: 7px;
-    padding: 0.5em 1em;
-    margin-top: 0.5em;
-    border: solid 2px purple;
-    color: purple;
-    background: none;
-    cursor: pointer;
-  }
-  
-  .searchInput {
-    border-radius: 7px;
-    padding: 0.5em 1em;
-    margin-top: 0.5em;
-    border: solid 2px purple;
-    background: none;
-    width: 100%;
-    max-width: 30em;
-  }
-
-/* Base styles */
-.usersGrid {
-  display: grid;
-  gap: 1.5rem;
-  padding: 1rem 0em;
-}
-
-.userCard {
-  background: white;
-  border-radius: 15px;
-  padding: 1.5rem;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
-  align-items: center;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  gap: 2rem;
+  padding: 8em 1em;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
-.userCard:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+.formContainer {
+  width: 100%;
+  background: #fff;
+  border-radius: 10px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
-.userIcon {
-  width: 100px;
-  height: 100px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 3px solid #f0f0f0;
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: 100%;
+}
+
+.formTitle {
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+  color: #333;
+}
+
+.inputField, 
+.selectField {
+  padding: 0.75rem;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 1rem;
+  width: 100%;
+}
+
+.fileInputLabel {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: #555;
+}
+
+.fileInput {
+  width: 100%;
   margin-bottom: 1rem;
 }
 
-.userName {
-  margin: 0.5rem 0;
+.submitButton {
+  background-color: #4a76a8;
+  color: white;
+  padding: 0.75rem;
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.submitButton:hover {
+  background-color: #3a5f8a;
+}
+
+.adminPanel {
+  width: 100%;
+  background: #fff;
+  border-radius: 10px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.adminTitle {
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
   color: #333;
-  font-size: 1.2rem;
+}
+
+.searchContainer {
+  margin-bottom: 1.5rem;
+}
+
+.searchInput {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 1rem;
+}
+
+.usersGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 1.5rem;
+}
+
+.userCard {
+  background: #f9f9f9;
+  border-radius: 8px;
+  padding: 1.5rem;
   text-align: center;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.userIcon {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin: 0 auto 1rem;
+}
+
+.userName {
+  font-size: 1.1rem;
+  margin-bottom: 0.5rem;
+  color: #333;
 }
 
 .userRole {
   color: #666;
-  margin: 0.25rem 0;
   font-size: 0.9rem;
-  text-align: center;
+  margin-bottom: 1rem;
 }
 
 .adminToggleButton {
+  background-color: #4a76a8;
+  color: white;
   padding: 0.5rem 1rem;
-  border-radius: 7px;
-  border: 2px solid purple;
-  background: none;
-  color: purple;
+  border: none;
+  border-radius: 5px;
+  font-size: 0.9rem;
   cursor: pointer;
-  font-weight: 500;
-  margin-top: 1rem;
-  transition: all 0.2s ease;
-  width: 100%;
-  max-width: 150px;
+  transition: background-color 0.3s;
 }
 
 .adminToggleButton:hover {
-  background: purple;
-  color: white;
+  background-color: #3a5f8a;
 }
 
-.searchContainer {
-  padding-top: 1rem;
-  width: 100%;
-  display: flex;
+.noUsers {
+  text-align: center;
+  color: #666;
+  margin: 2rem 0;
 }
 
-.searchInput {
-  padding: 0.75rem 1.25rem;
-  border-radius: 7px;
-  border: 2px solid purple;
-  background: none;
-  width: 100%;
-  max-width: 400px;
-  font-size: 1rem;
-}
-
-.searchInput:focus {
-  outline: none;
-  box-shadow: 0 0 0 3px rgba(128, 0, 128, 0.2);
-}
-
-/* Responsive grid layout */
-@media (min-width: 600px) {
-  .usersGrid {
-    grid-template-columns: repeat(2, 1fr);
+/* Responsive adjustments */
+@media (min-width: 768px) {
+  .container {
+    flex-direction: row;
+    align-items: flex-start;
+  }
+  
+  .formContainer {
+    width: 40%;
+    position: sticky;
+    top: 1rem;
+  }
+  
+  .adminPanel {
+    width: 60%;
   }
 }
 
-@media (min-width: 900px) {
-  .usersGrid {
-    grid-template-columns: repeat(3, 1fr);
+@media (max-width: 480px) {
+  .formTitle, .adminTitle {
+    font-size: 1.3rem;
   }
-}
-
-@media (min-width: 1200px) {
-  .usersGrid {
-    grid-template-columns: repeat(4, 1fr);
+  
+  .inputField, 
+  .selectField,
+  .searchInput {
+    padding: 0.65rem;
   }
-}
-
-/* Mobile adjustments */
-@media (max-width: 599px) {
+  
+  .submitButton,
+  .adminToggleButton {
+    padding: 0.65rem;
+  }
+  
   .usersGrid {
     grid-template-columns: 1fr;
   }
-  
-  .userCard {
-    max-width: 300px;
-    margin: 0 auto;
-  }
-}
-
-/* Empty state */
-.noUsers {
-  margin-top: 2rem;
-  text-align: center;
-  color: #666;
-  padding: 2rem;
 }

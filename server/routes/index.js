@@ -7,6 +7,7 @@ const songRouter = require("./song");
 const playlistRouter = require("./playlist");
 const uploadRouter = require("./upload");
 const likedSongs = require("./likedSongs");
+const recommendRouter = require("./recommend");
 
 module.exports = rootRouter;
 
@@ -15,3 +16,4 @@ rootRouter.use("/songs", songRouter);
 rootRouter.use("/upload", uploadRouter);
 rootRouter.use("/playlists", playlistRouter);
 rootRouter.use("/likedsongs", likedSongs);
+rootRouter.use("/recommend", recommendRouter);

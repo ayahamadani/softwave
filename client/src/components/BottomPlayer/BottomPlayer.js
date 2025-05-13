@@ -1,6 +1,6 @@
 import { React, useEffect, useState, useContext, useRef } from 'react';
 import SongContext from '../context/SongContext';
-import styles from '../../pages/Home/Home.module.css';
+import styles from "./BottomPlayer.module.css";
 import axios from 'axios';
 
 export default function BottomPlayer() {
@@ -125,14 +125,14 @@ export default function BottomPlayer() {
 
     return (
       <div className={styles.stickyBottom}>
-        <div style={{display: "flex", gap: "0.7em"}}>
+      <div className={styles.leftControls}>
             <img src={currentSongData.albumCover} alt="currently-playing-song" style={{ width: "5em", height: "5em", objectFit: "cover" }}/>
             <div className={styles.white}>
-            <strong>{currentSongData.name}</strong>
-            <p>{currentSongData.artist}</p>
+            <strong style={{color: "white"}}>{currentSongData.name}</strong>
+            <p style={{color: "white"}}>{currentSongData.artist}</p>
             </div>
         </div>
-        <div style={{width: "30em"}}>
+        <div className={styles.middleControls}>
             <div className={styles.audioControlIconsContainer}>
                 <i style={{ cursor: "pointer" }} className="fa-solid fa-backward-step" onClick={() => rewindSong(currentSongData)}></i>
                 <i style={{ cursor: "pointer" }} className={`fa-solid ${currentSongData.isPlaying ? "fa-pause" : "fa-play"}`} onClick={() => playSong(currentSongData, currentQueue)}></i>
@@ -141,13 +141,16 @@ export default function BottomPlayer() {
             <div className={styles.progressContainer}>
                 <span style={{color: "white"}}>{formatTime(currentTime)}</span>
                 <input
-                type="range"
-                min="0"
-                max={duration}
-                value={currentTime}
-                step="0.1"
-                onChange={handleSeek}
-                className={styles.progressBar}
+                  type="range"
+                  min="0"
+                  max={duration || 100}
+                  value={currentTime}
+                  step="0.1"
+                  onChange={handleSeek}
+                  className={styles.progressBar}
+                  style={{
+                    '--progress': duration ? `${(currentTime / duration) * 100}%` : '0%'
+                  }}
                 />
                 <span style={{color: "white"}}>{formatTime(duration)}</span>
             </div>
@@ -155,7 +158,7 @@ export default function BottomPlayer() {
 
          
         
-        <div style={{ paddingRight: "3em", display: "flex"}}>
+      <div className={styles.rightControls}>
           <div style={{display: "flex"}}>
               <div style={{marginRight: "0.5em"}}>
                 {volume > 0 && volume < 0.6 ? (

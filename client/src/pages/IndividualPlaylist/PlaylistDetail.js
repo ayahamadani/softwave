@@ -1,16 +1,15 @@
 import React, { useEffect, useState, useContext, useRef } from "react";
 import { useParams } from "react-router-dom";
 import SongContext from '../../components/context/SongContext';
-import styles from '../../pages/Home/Home.module.css';
 import axios from "axios";
+import styles from "./PlaylistDetail.module.css";
 
 export default function PlaylistDetail() {
   const { _id } = useParams();
   const [playlistSongs, setPlaylistSongs] = useState(null);
   const [playlist, setPlaylist] = useState(null);
   const fileInputRef = useRef();
-  const { currentSongData, playSong, likedSongsFront} = useContext(SongContext);
-
+  const { currentSongData, playSong, likedSongsFront } = useContext(SongContext);
 
   useEffect(() => {
     const fetchPlaylist = async () => {
@@ -31,9 +30,9 @@ export default function PlaylistDetail() {
     };
 
     fetchPlaylist();
-  }, [_id]);
+  }, [_id, likedSongsFront]);
 
-  if (!playlistSongs) return <p style={{ padding: "2em"}}>Loading playlist...</p>;
+  if (!playlistSongs) return <div className={styles.loadingState}>Loading playlist...</div>;
 
   const handleFileChange = async (e) => {
     const file = e.target.files[0];
@@ -44,13 +43,10 @@ export default function PlaylistDetail() {
   
     try {
       const user = JSON.parse(localStorage.getItem("user"));
-      const userId = user.userId;
       const response = await axios.post(
-        `https://softwave-music-player.onrender.com/upload/${userId}/${playlist._id}`,
+        `https://softwave-music-player.onrender.com/upload/${user.userId}/${playlist._id}`,
         formData,
-        {
-          headers: { "Content-Type": "multipart/form-data" },
-        }
+        { headers: { "Content-Type": "multipart/form-data" } }
       );
       setPlaylist(response.data.playlist);
     } catch (error) {
@@ -60,38 +56,71 @@ export default function PlaylistDetail() {
   };
 
   return (
-    <div style={{ padding: "8em 2em", marginLeft: "3em", display: "flex", flexDirection: "column" }}>
-      <img src={playlist.playlistIcon} alt="playlist-icon" style={{width: "15em", height: "15em", borderRadius: "15px", objectFit: "cover"}}/>
-      <button 
-        style={{color: "purple", width: "13em", margin: "2em 1em", height: "2em", borderRadius: "15px", background: "none", cursor: "pointer"}} 
-        onClick={() => fileInputRef.current.click()}
-      >
-        Change Playlist Cover
-      </button>
-      <input
-        type="file"
-        accept="image/*"
-        ref={fileInputRef}
-        style={{ display: "none" }}
-        onChange={handleFileChange}
-      />
-      <h2>{playlist.name}</h2>
-      <p>{playlistSongs.length} song(s)</p>
-       {playlistSongs.map((song, index) => (
-            <div key={song._id} className={styles.songItem} style={{width: "50%"}}>
-                <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                    <div style={{ padding: "0em 1.5em"}}>{index + 1}</div>
-                    <img src={song.albumCover} alt="" className={styles.songAlbumCover}/>
-                    <div>
-                    <strong>{song.name}</strong>
-                    <p>{song.artist}</p>
-                    </div>
-                </div>
-                <div style={{ paddingRight: "0.5em"}}>
-                    <i className={`fa-solid ${currentSongData.isPlaying && currentSongData._id === song._id ? "fa-pause" : "fa-play"}`} onClick={() => playSong(song, playlistSongs)} style={{ cursor: "pointer", paddingRight: "2em" }}></i>
-                </div>
+    <div className={styles.playlistDetailContainer}>
+      <div className={styles.playlistHeader}>
+        <div className={styles.coverContainer}>
+          <img 
+            src={playlist.playlistIcon} 
+            alt="playlist-icon" 
+            className={styles.playlistCover}
+            onError={(e) => {
+              e.target.onerror = null;
+              e.target.src = '/default-playlist.png';
+            }}
+          />
+          <button 
+            className={styles.changeCoverButton}
+            onClick={() => fileInputRef.current.click()}
+          >
+            Change Playlist Cover
+          </button>
+          <input
+            type="file"
+            accept="image/*"
+            ref={fileInputRef}
+            className={styles.hiddenInput}
+            onChange={handleFileChange}
+          />
+        </div>
+        
+        <div className={styles.playlistInfo}>
+          <h2 className={styles.playlistTitle}>{playlist.name}</h2>
+          <p className={styles.songCount}>{playlistSongs.length} {playlistSongs.length === 1 ? 'song' : 'songs'}</p>
+        </div>
+      </div>
+
+      <div className={styles.songsList}>
+        {playlistSongs.map((song, index) => (
+          <div key={song._id} className={styles.songItem}>
+            <div className={styles.songInfo}>
+              <div className={styles.songIndex}>{index + 1}</div>
+              <img 
+                src={song.albumCover} 
+                alt={song.name}
+                className={styles.albumCover}
+                onError={(e) => {
+                  e.target.onerror = null;
+                  e.target.src = '/default-album.png';
+                }}
+              />
+              <div className={styles.songDetails}>
+                <div className={styles.songName}>{song.name}</div>
+                <div className={styles.songArtist}>{song.artist}</div>
+              </div>
             </div>
+            <button 
+              className={styles.playButton}
+              onClick={() => playSong(song, playlistSongs)}
+            >
+              <i className={`fa-solid ${
+                currentSongData.isPlaying && currentSongData._id === song._id 
+                  ? "fa-pause" 
+                  : "fa-play"
+              }`} />
+            </button>
+          </div>
         ))}
+      </div>
     </div>
   );
 }

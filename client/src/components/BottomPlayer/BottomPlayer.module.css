@@ -1,0 +1,517 @@
+/* Bottom Player Container */
+.stickyBottom {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background-color: #1a1a1a;
+  padding: 0.8rem 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1.5rem;
+  z-index: 1000;
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.3);
+  border-top: 1px solid #333;
+}
+
+/* Left Controls - Song Info */
+.leftControls {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  min-width: 200px;
+  flex: 1;
+  overflow: hidden;
+}
+
+.leftControls img {
+  width: 56px;
+  height: 56px;
+  object-fit: cover;
+  border-radius: 8px;
+  flex-shrink: 0;
+}
+
+.songInfoText {
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.songInfoText strong {
+  display: block;
+  color: white;
+  font-size: 0.95rem;
+  margin-bottom: 0.2rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.songInfoText p {
+  color: #b3b3b3;
+  font-size: 0.85rem;
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Middle Controls - Playback */
+.middleControls {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 2;
+  min-width: 250px;
+  max-width: 600px;
+}
+
+.audioControlIconsContainer {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.audioControlIconsContainer i {
+  color: white;
+  font-size: 1.3rem;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.audioControlIconsContainer i:hover {
+  color: #9b59b6;
+}
+
+.audioControlIconsContainer i.fa-play,
+.audioControlIconsContainer i.fa-pause {
+  font-size: 1.6rem;
+}
+
+.progressContainer {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  width: 100%;
+}
+
+.progressContainer span {
+  color: #b3b3b3;
+  font-size: 0.8rem;
+  min-width: 40px;
+  text-align: center;
+}
+
+.progressBar {
+  flex-grow: 1;
+  height: 4px;
+  -webkit-appearance: none;
+  appearance: none;
+  background: #535353;
+  border-radius: 2px;
+  outline: none;
+  cursor: pointer;
+  transition: height 0.2s ease;
+}
+
+.progressBar:hover {
+  height: 6px;
+}
+
+.progressBar::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 12px;
+  height: 12px;
+  background: #9b59b6;
+  border-radius: 50%;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.progressBar:hover::-webkit-slider-thumb {
+  opacity: 1;
+}
+
+/* Right Controls - Volume and Options */
+.rightControls {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  justify-content: flex-end;
+  flex: 1;
+  min-width: 200px;
+}
+
+.volumeControls {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.volumeControls i {
+  color: white;
+  font-size: 1.2rem;
+  cursor: pointer;
+  min-width: 20px;
+}
+
+.volumeInput {
+  width: 80px;
+  height: 4px;
+  -webkit-appearance: none;
+  appearance: none;
+  background: #535353;
+  border-radius: 2px;
+  outline: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.volumeInput:hover {
+  height: 6px;
+}
+
+.volumeInput::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 12px;
+  height: 12px;
+  background: #9b59b6;
+  border-radius: 50%;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.volumeInput:hover::-webkit-slider-thumb {
+  opacity: 1;
+}
+
+.rightControls .fa-plus,
+.rightControls .fa-heart {
+  color: white;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.rightControls .fa-plus:hover,
+.rightControls .fa-heart:hover {
+  color: #9b59b6;
+}
+
+.rightControls .fa-heart.fa-solid {
+  color: #9b59b6;
+}
+
+/* Dropdown Menu */
+.bottomDropDownMenu {
+  position: absolute;
+  bottom: 70px;
+  right: 20px;
+  background-color: #282828;
+  border-radius: 4px;
+  padding: 0.5rem 0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  z-index: 1001;
+  min-width: 180px;
+  animation: fadeIn 0.2s ease-out;
+}
+
+.dropdownItem {
+  color: white;
+  padding: 0.6rem 1rem;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.dropdownItem:hover {
+  background-color: #3e3e3e;
+}
+
+/* Modals */
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1002;
+}
+
+.modalContent {
+  background-color: #282828;
+  border-radius: 8px;
+  padding: 1.5rem;
+  width: 90%;
+  max-width: 400px;
+  color: white;
+}
+
+.modalContent h3 {
+  margin-bottom: 1.2rem;
+  font-size: 1.2rem;
+}
+
+.modalInput {
+  width: 100%;
+  padding: 0.8rem;
+  background-color: #535353;
+  border: none;
+  border-radius: 4px;
+  color: white;
+  margin-bottom: 1.2rem;
+}
+
+.modalInput::placeholder {
+  color: #b3b3b3;
+}
+
+.modalButtons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.8rem;
+}
+
+.modalButtons button {
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.modalButtons button:first-child {
+  background-color: #9b59b6;
+  color: white;
+}
+
+.modalButtons button:first-child:hover {
+  background-color: #8e44ad;
+}
+
+.modalButtons button:last-child {
+  background-color: transparent;
+  color: white;
+  border: 1px solid #535353;
+}
+
+.modalButtons button:last-child:hover {
+  background-color: #3e3e3e;
+}
+
+/* Playlist Selection Modal */
+.modal {
+  background-color: #282828;
+  border-radius: 8px;
+  padding: 1.5rem;
+  width: 90%;
+  max-width: 300px;
+  color: white;
+  position: relative;
+}
+
+.modal h4 {
+  margin-bottom: 1.2rem;
+  font-size: 1.1rem;
+}
+
+.closeButton {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: none;
+  border: none;
+  color: #b3b3b3;
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .stickyBottom {
+    flex-wrap: wrap;
+    padding: 0.8rem;
+    gap: 0.8rem;
+  }
+  
+  .leftControls {
+    order: 1;
+    flex: 1 0 100%;
+    justify-content: center;
+  }
+  
+  .middleControls {
+    order: 3;
+    flex: 1 0 100%;
+    margin-top: 0.5rem;
+  }
+  
+  .rightControls {
+    order: 2;
+    flex: 1;
+    justify-content: center;
+  }
+  
+  .audioControlIconsContainer {
+    gap: 1.2rem;
+  }
+  
+  .bottomDropDownMenu {
+    bottom: 120px;
+    right: 50%;
+    transform: translateX(50%);
+  }
+}
+
+@media (max-width: 480px) {
+  .leftControls {
+    justify-content: flex-start;
+  }
+  
+  .songInfoText strong {
+    font-size: 0.85rem;
+  }
+  
+  .songInfoText p {
+    font-size: 0.8rem;
+  }
+  
+  .audioControlIconsContainer i {
+    font-size: 1.1rem;
+  }
+  
+  .audioControlIconsContainer i.fa-play,
+  .audioControlIconsContainer i.fa-pause {
+    font-size: 1.4rem;
+  }
+  
+  .progressContainer span {
+    font-size: 0.7rem;
+    min-width: 35px;
+  }
+  
+  .rightControls {
+    gap: 0.8rem;
+  }
+  
+  .rightControls .fa-plus,
+  .rightControls .fa-heart {
+    font-size: 1.1rem;
+  }
+}
+
+/* Updated Progress Bar Styles */
+.progressContainer {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  width: 100%;
+}
+
+.progressBar {
+  flex-grow: 1;
+  height: 4px;
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+  outline: none;
+  cursor: pointer;
+  position: relative;
+}
+
+/* Progress Bar Track */
+.progressBar::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #535353;
+  border-radius: 2px;
+}
+
+/* Progress Bar Fill - colored portion */
+.progressBar::-webkit-progress-value {
+  background: #9b59b6;
+  border-radius: 2px;
+}
+
+/* For Firefox */
+.progressBar::-moz-range-progress {
+  background: #9b59b6;
+  border-radius: 2px;
+  height: 100%;
+}
+
+/* Progress Bar Thumb */
+.progressBar::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 12px;
+  height: 12px;
+  background: #9b59b6;
+  border-radius: 50%;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  position: relative;
+  z-index: 1;
+}
+
+.progressBar:hover::-webkit-slider-thumb {
+  opacity: 1;
+}
+
+/* For Firefox */
+.progressBar::-moz-range-thumb {
+  width: 12px;
+  height: 12px;
+  background: #9b59b6;
+  border-radius: 50%;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  border: none;
+}
+
+.progressBar:hover::-moz-range-thumb {
+  opacity: 1;
+}
+
+/* Time Indicators */
+.progressContainer span {
+  color: #b3b3b3;
+  font-size: 0.8rem;
+  min-width: 40px;
+  text-align: center;
+  font-family: monospace; /* For consistent width of time display */
+}
+
+/* Fallback for browsers that don't support pseudo-elements on range inputs */
+/* .progressBar {
+  background: linear-gradient(to right, #9b59b6 var(--progress, 0%), #535353 var(--progress, 0%);
+  background-repeat: no-repeat;
+  border-radius: 2px;
+} */
