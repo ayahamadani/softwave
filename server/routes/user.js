@@ -79,6 +79,7 @@ userRouter.post("/login", async (req, res) => {
         const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: "1h" });
         const isAdmin = user.isAdmin;
         const userId = user._id;
+        const icon = user.icon;
         res.status(200).json({username, isAdmin, userId, icon});
 
     } catch (error) {
