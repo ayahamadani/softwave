@@ -12,7 +12,7 @@ export default function Login() {
   useEffect(() => {
     const user = localStorage.getItem("user");
     if (user) {
-      navigate("/home", { replace: true });
+      navigate("/", { replace: true });
     }
   }, [navigate]);
 

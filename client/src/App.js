@@ -15,6 +15,8 @@ import BottomPlayer from './components/BottomPlayer/BottomPlayer';
 import ProtectedRoute from './components/ProtectedRoute';
 import PlaylistDetail from './pages/IndividualPlaylist/PlaylistDetail';
 import { BrowserRouter as Router, Routes, Route, useLocation  } from "react-router-dom";
+import { AuthModalProvider } from './components/context/AuthModalContext';
+import AuthModal from './components/AuthModal/AuthModal';
 
 function App() {
   const [currentSongData, setCurrentSongData] = useState({});
@@ -22,7 +24,7 @@ function App() {
   const [searchQuery, setSearchQuery] = useState("");
   const [songs, setSongs] = useState([]);
   const [volume, setVolume] = useState(1);
-  const [userIcon, setUserIcon]= useState("");
+  const [userIcon, setUserIcon]= useState("https://my-songs-bucket443181317692.s3.eu-north-1.amazonaws.com/user-icons/catee.jpg");
   const [likedSongsFront, setLikedSongsFront] = useState([]);
   const [currentQueue, setCurrentQueue] = useState([]);
   const [user, setUser] = useState(null);
@@ -39,7 +41,7 @@ function App() {
   }, []);
 
   // To hide the bottom player from both the login and signup pages
-  const hidePlayer = location.pathname === "/" || location.pathname === "/signup";
+  const hidePlayer = location.pathname === "/login" || location.pathname === "/signup";
 
   // useEffect that gets triggered when changing pages
   useEffect(() => {
@@ -308,70 +310,73 @@ const rewindSong = useCallback((song) => {
     axios
     .get(`https://softwave-music-player.onrender.com/auth/${userId}`)
     .then((res) => {
-      setUserIcon(res.data.icon);
+      setUserIcon(user.icon);
     })
     .catch((err) => console.error("Failed to fetch Icon", err));
   }, []);
 
 
   return (
-  <SongContext.Provider
-    value={{
-      currentSongData,
-      setCurrentSongData,
-      playSong,
-      currentSongAudio,
-      setCurrentSongAudio,
-      rewindSong,
-      songs,
-      setSongs,
-      getSongIndex,
-      skipSong,
-      toggleLike,
-      searchQuery,
-      setSearchQuery,
-      volume,
-      setVolume,
-      userIcon,
-      setUser,
-      user,
-      setUserIcon,
-      likedSongsFront,
-      setLikedSongsFront,
-      setCurrentQueue,
-      currentQueue,
-      loading, 
-      setLoading
-    }}
-  >
-    {!hidePlayer && <Navbar setSearchQuery={setSearchQuery}/>}
-    {loading ? (
-      <Loader />
-    ) : (
-      <>
-        <Routes>
-          <Route path="/" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
-          <Route path="/home" element={<Home />} />
-          <Route path="/profile" element={<Profile />} />
-          <Route 
-            path="/adminPanel" 
-            element={
-              <ProtectedRoute user={user} adminOnly={true}>
-                {/* The children in this context is the AdminPanel component */}
-                <AdminPanel />
-              </ProtectedRoute>
-            } 
-          />
-          <Route path="/login" element={<Login setUser={setUser} />} />
-          <Route path="/likedSongs" element={<LikedSongs />} />
-          <Route path="/playlists" element={<Playlists />} />
-          <Route path="/playlists/:_id" element={<PlaylistDetail />} />
-        </Routes>
-      </>
-    )}
-    {!hidePlayer && currentSongAudio && <BottomPlayer />}
-  </SongContext.Provider>
+    <AuthModalProvider>
+    <SongContext.Provider
+      value={{
+        currentSongData,
+        setCurrentSongData,
+        playSong,
+        currentSongAudio,
+        setCurrentSongAudio,
+        rewindSong,
+        songs,
+        setSongs,
+        getSongIndex,
+        skipSong,
+        toggleLike,
+        searchQuery,
+        setSearchQuery,
+        volume,
+        setVolume,
+        userIcon,
+        setUser,
+        user,
+        setUserIcon,
+        likedSongsFront,
+        setLikedSongsFront,
+        setCurrentQueue,
+        currentQueue,
+        loading, 
+        setLoading
+      }}
+    >
+      <AuthModal />
+      {!hidePlayer && <Navbar setSearchQuery={setSearchQuery}/>}
+      {loading ? (
+        <Loader />
+      ) : (
+        <>
+          <Routes>
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<Signup />} />
+            <Route path="/" element={<Home />} />
+            <Route path="/profile" element={<Profile />} />
+            <Route 
+              path="/adminPanel" 
+              element={
+                <ProtectedRoute user={user} adminOnly={true}>
+                  {/* The children in this context is the AdminPanel component */}
+                  <AdminPanel />
+                </ProtectedRoute>
+              } 
+            />
+            <Route path="/login" element={<Login setUser={setUser} />} />
+            <Route path="/likedSongs" element={<LikedSongs />} />
+            <Route path="/playlists" element={<Playlists />} />
+            <Route path="/playlists/:_id" element={<PlaylistDetail />} />
+          </Routes>
+        </>
+      )}
+      {!hidePlayer && currentSongAudio && <BottomPlayer />}
+    </SongContext.Provider>
+  </AuthModalProvider>
 );
 
 } 

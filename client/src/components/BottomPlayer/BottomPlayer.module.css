@@ -310,14 +310,19 @@
 
 /* Playlist Selection Modal */
 .modal {
+  position: absolute;
+  bottom: 6rem; /* Distance from the bottom of the player bar */
+  right: 3.5rem;  /* Adjust as needed to align with the plus icon */
   background-color: #282828;
   border-radius: 8px;
-  padding: 1.5rem;
-  width: 90%;
-  max-width: 300px;
+  padding: 1rem;
+  width: 180px;
   color: white;
-  position: relative;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  z-index: 1000;
+  animation: fadeIn 0.3s ease-out;
 }
+
 
 .modal h4 {
   margin-bottom: 1.2rem;

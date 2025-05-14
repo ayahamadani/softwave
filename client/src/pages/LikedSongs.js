@@ -43,7 +43,7 @@ export default function LikedSongs() {
 
    useEffect(() => {
     if (likedSongsFront.length > 0) {
-      const targetSongId = likedSongsFront[likedSongsFront.length - 1]._id; // Pick the most recent liked song
+      const targetSongId = likedSongsFront[likedSongsFront.length - 1]._id;
 
      const fetchRecommendations = async () => {
   try {
@@ -57,8 +57,6 @@ export default function LikedSongs() {
 
     // Log the response text to inspect it
     const textResponse = await response.text();
-console.log('Raw response:', textResponse); 
-    console.log('Raw response:', textResponse);
 
     // Try to parse if it's valid JSON
     const data = JSON.parse(textResponse);

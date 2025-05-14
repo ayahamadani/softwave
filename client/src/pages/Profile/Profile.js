@@ -1,11 +1,11 @@
-import { React, useRef, useContext } from 'react';
+import { React, useRef, useContext, useState, useEffect } from 'react';
 import styles from './Profile.module.css';
 import SongContext from '../../components/context/SongContext';
 import axios from 'axios';
 
 export default function Profile() {
-  const { userIcon, setUserIcon } = useContext(SongContext);
-  const user = JSON.parse(localStorage.getItem("user"));
+const { userIcon, setUserIcon, user } = useContext(SongContext);  
+  // const user = JSON.parse(localStorage.getItem("user"));
   const fileInputRef = useRef();
 
   const handleFileChange = async (e) => {
@@ -46,6 +46,7 @@ export default function Profile() {
         </div>
         
         <button
+          style={user ? { display: 'block' } : { display: 'none' }}
           onClick={() => fileInputRef.current.click()}
           className={styles.changeAvatarButton}
         >
@@ -64,12 +65,12 @@ export default function Profile() {
       <div className={styles.userInfoContainer}>
         <div className={styles.infoRow}>
           <span className={styles.infoLabel}>Username:</span>
-          <span>{user.username}</span>
+          <span>{user? user.username : "no username"}</span>
         </div>
         <div className={styles.infoRow}>
           <span className={styles.infoLabel}>User Type:</span>
-          <span className={user.isAdmin ? styles.adminText : ''}>
-            {user.isAdmin ? "Admin" : "Normal User"}
+          <span className={user && user.isAdmin ? styles.adminText : ''}>
+            {user && user.isAdmin ? "Admin" : user ? "Normal User" : "log in first"}
           </span>
         </div>
       </div>

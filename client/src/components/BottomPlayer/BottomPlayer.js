@@ -1,10 +1,12 @@
 import { React, useEffect, useState, useContext, useRef } from 'react';
 import SongContext from '../context/SongContext';
+import AuthModalContext from "../context/AuthModalContext";
 import styles from "./BottomPlayer.module.css";
 import axios from 'axios';
 
 export default function BottomPlayer() {
-    const { currentSongData, playSong, currentSongAudio, rewindSong, skipSong, toggleLike, volume, setVolume, currentQueue } = useContext(SongContext);
+    const { triggerAuthModal } = useContext(AuthModalContext);
+    const { currentSongData, playSong, currentSongAudio, rewindSong, skipSong, toggleLike, volume, setVolume, currentQueue, user } = useContext(SongContext);
     const [currentTime, setCurrentTime] = useState(0);
     const [duration, setDuration] = useState(0);
     const [lastVolume, setLastVolume] = useState(1);
@@ -120,6 +122,14 @@ export default function BottomPlayer() {
         console.error("Error adding song to playlist", err);
       }
     };
+
+    const handleLike = () => {
+      if (!user) {
+        triggerAuthModal();
+        return;
+      }
+      toggleLike(currentSongData);
+    };
     
     
 
@@ -197,7 +207,20 @@ export default function BottomPlayer() {
             {showDropdown && (
               <div className={styles.bottomDropDownMenu} ref={dropdownRef}>
                 <div className={styles.dropdownItem} onClick={fetchUserPlaylists}>Add To Existing Playlist</div>                
-                <div className={styles.dropdownItem} style={{color: "purple"}}  onClick={() => { setShowModal(true); setShowDropdown(false);}}>Create A New Playlist</div>
+                <div
+                  className={styles.dropdownItem}
+                  style={{ color: "purple" }}
+                  onClick={() => {
+                    if (!user) {
+                      triggerAuthModal();
+                      return;
+                    }
+                    setShowModal(true);
+                    setShowDropdown(false);
+                  }}
+                >
+                  Create A New Playlist
+                </div>
               </div>
             )}
             {showModal && (
@@ -233,12 +256,19 @@ export default function BottomPlayer() {
                 ))}
               </div>
             )}
-            <i
+           <i
               className="fa-solid fa-plus"
-              style={{color: "white", marginRight: "1em", cursor: "pointer"}}
-              onClick={() => setShowDropdown((prev) => !prev)}>
-            </i>
-            <i style={{color: "white", cursor: "pointer"}} className={`fa-heart ${currentSongData.isLiked ? "fa-solid" : "fa-regular"}`} onClick={() => toggleLike(currentSongData)}></i>
+              style={{ color: "white", marginRight: "1em", cursor: "pointer" }}
+              onClick={() => {
+                if (!user) {
+                  triggerAuthModal();
+                  return;
+                }
+                setShowDropdown((prev) => !prev);
+              }}
+            ></i>
+
+            <i style={{color: "white", cursor: "pointer"}} className={`fa-heart ${currentSongData.isLiked ? "fa-solid" : "fa-regular"}`} onClick={handleLike}></i>
         </div>
     </div>
     )

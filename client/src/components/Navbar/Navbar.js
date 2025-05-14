@@ -8,9 +8,9 @@ export default function Navbar({ setSearchQuery }) {
   const [showDropdown, setShowDropdown] = useState(false);
   const dropdownRef = useRef();
   const iconContainerRef = useRef();
-  const inputRef = useRef();
-  const user = JSON.parse(localStorage.getItem("user"));
-  const { userIcon, setUserIcon } = useContext(SongContext);
+  const inputRef = useRef();  
+
+  const { userIcon, setUserIcon, user } = useContext(SongContext);
 
   const handleInputChange = (e) => {
     setSearchQuery(inputRef.current.value);
@@ -39,16 +39,9 @@ export default function Navbar({ setSearchQuery }) {
     window.location.href = "/";
   };
 
-  useEffect(() => {
-    const user = JSON.parse(localStorage.getItem("user"));
-    const userId = user.userId;
-    axios
-      .get(`https://softwave-music-player.onrender.com/auth/${userId}`)
-      .then((res) => {
-        setUserIcon(res.data.icon);
-      })
-      .catch((err) => console.error("Failed to fetch Icon", err));
-  }, []);
+  const goToLogin = () => {
+    window.location.href = "/login";
+  }
 
   return (
     <div className={styles.navbarContainer}>
@@ -64,8 +57,28 @@ export default function Navbar({ setSearchQuery }) {
       </div>
 
       <div className={styles.rightNav}>
+
+       {!user ? (
+        <button
+          onClick={goToLogin}
+          style={{
+            width: "150px",
+            borderRadius: "8px",
+            border: "2px solid purple",
+            color: "purple",
+            backgroundColor: "white",
+            padding: "0.5em 1em",
+            cursor: "pointer",
+            fontWeight: 500,
+            transition: "all 0.2s ease"
+          }}
+        >
+          Log In
+        </button>
+      ) : null}
+
         <div className={styles.navLinks}>
-          <Link to="/home" className={styles.navLink}>Home</Link>
+          <Link to="/" className={styles.navLink}>Home</Link>
           <Link to="/likedSongs" className={styles.navLink}>Liked Songs</Link>
           <Link to="/playlists" className={styles.navLink}>Playlists</Link>
         </div>
@@ -75,7 +88,7 @@ export default function Navbar({ setSearchQuery }) {
           onClick={toggleDropdown}
         >
           <img
-            src={userIcon || '/default-user-icon.png'}
+            src={userIcon}
             alt="User profile"
             className={styles.userIcon}
           />
@@ -85,12 +98,12 @@ export default function Navbar({ setSearchQuery }) {
               <Link to="/profile" className={styles.dropdownLink}>
                 <div className={styles.dropdownItem}>Profile</div>
               </Link>
-              {user.isAdmin && (
+              {user && user.isAdmin && (
                 <Link to="/adminPanel" className={styles.dropdownLink}>
                   <div className={`${styles.dropdownItem} ${styles.adminItem}`}>Admin Panel</div>
                 </Link>
               )}
-              <div className={styles.dropdownItem} onClick={handleLogout}>Logout</div>
+              <div style={user ? {display: "block"} : {display: "none"} } className={styles.dropdownItem} onClick={handleLogout}>Logout</div>
             </div>
           )}
         </div>

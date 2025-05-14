@@ -1,4 +1,5 @@
-import { React, useState, useEffect } from 'react';
+import { React, useState, useEffect, useContext } from 'react';
+import SongContext from '../components/context/SongContext';
 import { Link } from "react-router-dom";
 import axios from 'axios';
 import Loader from '../components/Loader/Loader';
@@ -6,19 +7,21 @@ import Loader from '../components/Loader/Loader';
 export default function Playlists() {
   const [playlists, setPlaylists] = useState([]);
   const [loading, setLoading] = useState(true);
+  const { user } = useContext(SongContext);
 
   useEffect(() => {
-    const user = JSON.parse(localStorage.getItem("user"));
-    axios.get(`https://softwave-music-player.onrender.com/playlists/user/${user.userId}`)
-      .then((res) => {
-        setPlaylists(res.data);
-        setLoading(false);
-      })
-      .catch(() => setLoading(false));
+    if(user) {
+      axios.get(`https://softwave-music-player.onrender.com/playlists/user/${user.userId}`)
+        .then((res) => {
+          setPlaylists(res.data);
+          setLoading(false);
+        })
+        .catch(() => setLoading(false));
+    }
   }, []);
 
   if (loading) {
-    return <Loader />;
+    <div>No Playlists So far</div>
   }
 
   return (
@@ -56,9 +59,6 @@ export default function Playlists() {
       ) : (
         <div className="empty-state">
           <p>You don't have any playlists yet</p>
-          <Link to="/create-playlist" className="create-btn">
-            Create your first playlist
-          </Link>
         </div>
       )}
     </div>

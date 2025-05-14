@@ -10,7 +10,7 @@ export default function Signup() {
     useEffect(() => {
       const user = localStorage.getItem("user");
       if (user) {
-        navigate("/home", { replace: true });
+        navigate("/", { replace: true });
       }
     }, []);
 
@@ -90,7 +90,7 @@ export default function Signup() {
       }
 
       localStorage.setItem("user", JSON.stringify(data));
-      navigate("/home", { replace : true });
+      navigate("/", { replace : true });
     } catch (error) {
       setError(error.message);
     }
@@ -113,7 +113,7 @@ export default function Signup() {
 
         <div className={styles.signUpOptionContainer}>
           <p>switch to</p>
-          <Link to="/">Login?</Link>
+          <Link to="/login">Login?</Link>
         </div>
       </div>
     </div>
