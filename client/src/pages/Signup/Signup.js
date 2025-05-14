@@ -1,11 +1,13 @@
-import { React, useEffect } from 'react';
+import { React, useEffect, useContext } from 'react';
 import { Link, useNavigate } from "react-router-dom";
 import styles from "../Login/Login.module.css";
 import Login from '../Login/Login';
 import { useState } from 'react';
+import SongContext from '../../components/context/SongContext';
 
 export default function Signup() {
    const navigate = useNavigate();
+   const {setUser} = useContext(SongContext);
   
     useEffect(() => {
       const user = localStorage.getItem("user");
@@ -90,6 +92,7 @@ export default function Signup() {
       }
 
       localStorage.setItem("user", JSON.stringify(data));
+      setUser(data);
       navigate("/", { replace : true });
     } catch (error) {
       setError(error.message);

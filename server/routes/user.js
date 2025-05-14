@@ -53,7 +53,8 @@ userRouter.post('/signup', [
         const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
         const isAdmin = user.isAdmin;
         const userId = user._id;
-        res.status(200).json({ message: "user registered successfully", username, isAdmin, userId });
+        const icon = user.icon;
+        res.status(200).json({ username, isAdmin, userId, icon });
         
     } catch (error) {
         res.status(500).json({ message: 'Server error', error});
