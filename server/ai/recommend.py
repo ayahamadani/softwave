@@ -30,6 +30,10 @@ if len(sys.argv) < 2:
 target_ids = [s.strip() for s in sys.argv[1].split(',') if s.strip()]
 target_songs = df[df['_id'].isin(target_ids)]
 if target_songs.empty:
+    print("Seed IDs:", target_ids, file=sys.stderr)
+    print("Songs in DB:", len(df), file=sys.stderr)
+    print("Matches found:", len(target_songs), file=sys.stderr)
+
     sys.exit("None of the provided IDs were found.")
 
 # Preprocessing (Only using 'genre' and 'artist' columns)
