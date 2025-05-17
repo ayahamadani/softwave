@@ -67,7 +67,7 @@ export default function Login() {
       }
       localStorage.setItem("user", JSON.stringify(data));
       setUser(data);
-      navigate("/adminPanel");
+      window.location.reload();
     } catch (error) {
       setError(error.message);
     }

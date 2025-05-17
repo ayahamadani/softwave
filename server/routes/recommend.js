@@ -7,13 +7,14 @@ const recommendRouter = express.Router();
 
 // POST /recommend
 recommendRouter.post('/', async (req, res) => {
-  const { songId } = req.body;
+  const { songIds } = req.body; // Expecting: "id1,id2,id3"
 
-  if (!songId) {
-    return res.status(400).json({ error: 'Missing songId in request body' });
+  if (!songIds) {
+    return res.status(400).json({ error: 'Missing songIds in request body' });
   }
 
-  const py = spawn('python', ['ai/recommend.py', songId]);
+  const py = spawn('python', ['ai/recommend.py', songIds]);
+
   let data = '';
   let errorData = '';
 
@@ -48,7 +49,7 @@ recommendRouter.post('/', async (req, res) => {
   });
 });
 
-// GET fallback
+// GET fallback (optional)
 recommendRouter.get('/', async (req, res) => {
   const { songIds } = req.query;
   try {

@@ -44,7 +44,8 @@ export default function LikedSongs() {
    useEffect(() => {
     if (likedSongsFront.length > 0) {
       const targetSongId = likedSongsFront[likedSongsFront.length - 1]._id;
-
+      const ids = likedSongsFront.map(s => s._id).join(',');
+      
      const fetchRecommendations = async () => {
   try {
     const response = await fetch('http://localhost:5000/recommend', {
@@ -52,7 +53,7 @@ export default function LikedSongs() {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ songId: targetSongId }),
+      body: JSON.stringify({ songIds: ids })
     });
 
     // Log the response text to inspect it

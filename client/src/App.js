@@ -34,6 +34,21 @@ function App() {
   const [loading, setLoading] = useState(false);
   const navbarInput = document.querySelector("#navbarSearchInput");
 
+  useEffect(() => {
+    const handleStorageChange = (event) => {
+      if (event.key === 'user' && event.newValue === null) {
+        window.location.reload();
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+    };
+  }, []);
+
+
   // State to track if the current logged in user is an admin or not
   useEffect(() => {
     const stored = localStorage.getItem("user");
@@ -288,6 +303,7 @@ const rewindSong = useCallback((song) => {
     const user = JSON.parse(localStorage.getItem("user"));
     let userId = null;
     if(user) {
+      console.log(user.icon);
       userId = user.userId;
     } else {
       return;

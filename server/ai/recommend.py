@@ -20,27 +20,20 @@ collection = db['songs']
 
 # Get all songs from MongoDB
 songs = list(collection.find({}))
-
-# Create DataFrame from MongoDB data
 df = pd.DataFrame(songs)
-
-# Convert ObjectId to string for consistency
 df['_id'] = df['_id'].apply(lambda x: str(x) if isinstance(x, ObjectId) else x)
 
-# Get target song ID from command-line argument
+# Get multiple target song IDs from command-line argument
 if len(sys.argv) < 2:
-    sys.exit("No song ID provided")
+    sys.exit("No song IDs provided (comma-separated)")
 
-target_id = str(sys.argv[1])
-
-# Find the target song
-target_song = df[df['_id'] == target_id]
-if target_song.empty:
-    sys.exit()
+target_ids = [s.strip() for s in sys.argv[1].split(',') if s.strip()]
+target_songs = df[df['_id'].isin(target_ids)]
+if target_songs.empty:
+    sys.exit("None of the provided IDs were found.")
 
 # Preprocessing (Only using 'genre' and 'artist' columns)
 features = df[['genre', 'artist']].fillna("unknown")
-target_features = target_song[['genre', 'artist']].fillna("unknown")
 
 # Version-safe OneHotEncoder
 sk_version = sklearn.__version__
@@ -50,18 +43,16 @@ else:
     enc = OneHotEncoder(sparse_output=False, handle_unknown='ignore')
 
 X = enc.fit_transform(features)
-target_X = enc.transform(target_features)
+target_X = enc.transform(target_songs[['genre','artist']].fillna("unknown"))
 
-# Compute similarity
-similarities = cosine_similarity(target_X, X).flatten()
+# Compute similarity (union strategy)
+similarity_matrix = cosine_similarity(target_X, X)
+similarities = similarity_matrix.max(axis=0)
 
-# Get top 3 similar songs excluding the song itself
+# Get top 3 similar songs excluding the input ones
 df['similarity'] = similarities
-recommended = df[df['_id'] != target_id].sort_values(by='similarity', ascending=False).head(3)
+recommended = df[~df['_id'].isin(target_ids)].sort_values('similarity', ascending=False).head(3)
 
-# Prepare output
+# Prepare and print JSON output
 recommended_songs = recommended[['name', 'artist', 'genre', 'albumCover', 'audio', '_id']].to_dict(orient='records')
-
-# Output as JSON
-output = json.dumps(recommended_songs, ensure_ascii=False)
-print(output)
+print(json.dumps(recommended_songs, ensure_ascii=False))

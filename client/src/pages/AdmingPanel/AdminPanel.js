@@ -1,4 +1,4 @@
-import { React, useEffect, useState, useContext } from 'react';
+import { useEffect, useState, useContext, useRef } from 'react';
 import styles from "./AdminPanel.module.css";
 import SongContext from '../../components/context/SongContext';
 import axios from 'axios';
@@ -7,18 +7,19 @@ export default function AdminPanel() {
     const [image, setImage] = useState(null);
     const [songFile, setSongFile] = useState(null);
     const [imageFile, setImageFile] = useState(null);
-
     const [songName, setSongName] = useState("");
     const [artist, setArtist] = useState("");
     const [genre, setGenre] = useState("");
-    const [albumCover, setAlbumCover] = useState("");
     const [users, setUsers] = useState([]);
     const [searchInput, setSearchInput] = useState("");
     const [filteredUsers, setFilteredUsers] = useState([]);
+    const songFileRef = useRef(null);
+    const imageFileRef = useRef(null);
+
 
 
     const { 
-      userIcon
+     user
    } = useContext(SongContext);
 
    const handleImageChange = (event) => {
@@ -40,8 +41,7 @@ export default function AdminPanel() {
 
     const handleSubmit = async (e) => {
       e.preventDefault();
-      const user = JSON.parse(localStorage.getItem("user"));
-      const userId = user.userId;
+      const userId = user._id;
     
       const formData = new FormData();
       formData.append("songName", songName);
@@ -68,6 +68,8 @@ export default function AdminPanel() {
         setImage(null);
         setSongFile(null);
         setImageFile(null);
+        if (songFileRef.current) songFileRef.current.value = "";
+        if (imageFileRef.current) imageFileRef.current.value = "";
       } catch (err) {
         console.error("Upload failed:", err.response?.data || err.message);
       }
@@ -80,7 +82,8 @@ export default function AdminPanel() {
     
         try {
           const res = await axios.get("https://softwave-music-player.onrender.com/auth");
-          const fetchedUsers = res.data;
+          console.log(res.data);
+          const fetchedUsers = res.data.filter(item => item.username !== user.username.toLowerCase());
           setUsers(fetchedUsers);
           setFilteredUsers(fetchedUsers);
         } catch (err) {
@@ -152,6 +155,7 @@ export default function AdminPanel() {
             accept="image/*" 
             onChange={handleImageChange}
             className={styles.fileInput}
+            ref={imageFileRef}
           />
 
           <label htmlFor="songFile" className={styles.fileInputLabel}>Song File</label>
@@ -161,6 +165,7 @@ export default function AdminPanel() {
             accept="audio/*" 
             onChange={handleSongFile}
             className={styles.fileInput}
+            ref={songFileRef}
           />
           
           <button type="submit" className={styles.submitButton}>Upload</button>

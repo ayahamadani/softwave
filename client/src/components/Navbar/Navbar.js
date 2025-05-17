@@ -46,7 +46,7 @@ export default function Navbar({ setSearchQuery }) {
   return (
     <div className={styles.navbarContainer}>
       <div className={styles.leftNav}>
-        <Link to="/home" className={styles.navbarBrand}>Softwave</Link>
+        <Link to="/" className={styles.navbarBrand}>Softwave</Link>
         <input 
           type="text" 
           placeholder='Search for a song' 

@@ -50,7 +50,7 @@
 }
 
 .submitButton {
-  background-color: #4a76a8;
+  background-color: #370537;
   color: white;
   padding: 0.75rem;
   border: none;
@@ -61,7 +61,7 @@
 }
 
 .submitButton:hover {
-  background-color: #3a5f8a;
+  background-color: rgb(148, 18, 148);
 }
 
 .adminPanel {
@@ -125,7 +125,7 @@
 }
 
 .adminToggleButton {
-  background-color: #4a76a8;
+  background-color: #370537;
   color: white;
   padding: 0.5rem 1rem;
   border: none;
@@ -136,7 +136,7 @@
 }
 
 .adminToggleButton:hover {
-  background-color: #3a5f8a;
+  background-color: rgb(148, 18, 148);
 }
 
 .noUsers {

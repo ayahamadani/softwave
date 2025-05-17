@@ -215,3 +215,8 @@
 .playlists-grid {
   animation: fadeIn 0.3s ease-out;
 }
+
+.mr1 {
+  align-items: center;
+  display: flex
+}

@@ -30,7 +30,7 @@ userRouter.post('/signup', [
     // check if a user already exists
     try {
         let userEmail  = await User.findOne({email});
-        let userName = await User.findOne({username});
+        let userName = await User.findOne({username: username.toLowerCase()});
 
         if (userName) {
             return res.status(400).json({ message: 'username is taken'});
@@ -66,7 +66,7 @@ userRouter.post("/login", async (req, res) => {
     try {
         const { username, password } = req.body;
 
-        const user = await User.findOne({username});
+        const user = await User.findOne({username: username.toLowerCase()});
 
         if (!user) {
             return res.status(404).json({ message: "user not found" });
