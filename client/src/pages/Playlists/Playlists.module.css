@@ -1,0 +1,167 @@
+.playlistsPage {
+  padding: 6rem 1rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  min-height: calc(100vh - 120px);
+}
+
+.playlistsHeader {
+  margin-bottom: 2rem;
+}
+
+.playlistsHeader h1 {
+  font-size: 2rem;
+  color: #333;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+}
+
+.divider {
+  height: 1px;
+  background-color: #e0e0e0;
+  margin-bottom: 2rem;
+}
+
+.playlistsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1.5rem;
+  padding: 0.5rem;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.playlistCard {
+  display: flex;
+  flex-direction: column;
+  text-decoration: none;
+  color: inherit;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.playlistCard:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.imageContainer {
+  position: relative;
+  width: 100%;
+  padding-top: 100%;
+  overflow: hidden;
+}
+
+.imageContainer img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.playlistCard:hover .imageContainer img {
+  transform: scale(1.05);
+}
+
+.playlistInfo {
+  padding: 1rem;
+}
+
+.playlistInfo h3 {
+  font-size: 1rem;
+  margin: 0 0 0.25rem 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: #333;
+}
+
+.playlistInfo p {
+  font-size: 0.875rem;
+  color: #666;
+  margin: 0;
+}
+
+.emptyState {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: #666;
+}
+
+.emptyState p {
+  font-size: 1.1rem;
+  margin-bottom: 1.5rem;
+}
+
+.createBtn {
+  display: inline-block;
+  padding: 0.75rem 1.5rem;
+  background-color: #9b59b6;
+  color: white;
+  text-decoration: none;
+  border-radius: 4px;
+  font-weight: 500;
+  transition: background-color 0.2s ease;
+}
+
+.createBtn:hover {
+  background-color: #8e44ad;
+}
+
+@media (max-width: 768px) {
+  .playlistsPage {
+    padding: 1.5rem 0.75rem;
+  }
+
+  .playlistsHeader h1 {
+    font-size: 1.75rem;
+  }
+
+  .playlistsGrid {
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .playlistsPage {
+    padding: 1.25rem 0.5rem;
+  }
+
+  .playlistsHeader h1 {
+    font-size: 1.5rem;
+  }
+
+  .playlistsGrid {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 0.75rem;
+  }
+
+  .playlistInfo {
+    padding: 0.75rem;
+  }
+
+  .playlistInfo h3 {
+    font-size: 0.9375rem;
+  }
+
+  .playlistInfo p {
+    font-size: 0.8125rem;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
