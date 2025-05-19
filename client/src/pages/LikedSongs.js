@@ -41,44 +41,6 @@ export default function LikedSongs() {
         fetchLikedSongs();
     }, [searchQuery, setLikedSongsFront]);
 
-   useEffect(() => {
-    if (likedSongsFront.length > 0) {
-      const targetSongId = likedSongsFront[likedSongsFront.length - 1]._id;
-      const ids = likedSongsFront.map(s => s._id).join(',');
-      
-     const fetchRecommendations = async () => {
-  try {
-    const response = await fetch('https://softwave-music-player.onrender.com/recommend', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ songIds: ids })
-    });
-
-    // Log the response text to inspect it
-    const textResponse = await response.text();
-
-    // Try to parse if it's valid JSON
-    const data = JSON.parse(textResponse);
-
-    if (response.ok) {
-      setRecommendations(data.slice(0, 2)); // Limit to 2 results
-    } else {
-      console.error('Error fetching recommendations:', data);
-    }
-  } catch (error) {
-    console.error('Error fetching recommendations:', error);
-  } finally {
-    setLoading(false);
-  }
-};
-
-
-      fetchRecommendations();
-    }
-  }, [likedSongsFront]);
-
 
     return (
       <div className={styles.homeContainer}>
@@ -105,39 +67,6 @@ export default function LikedSongs() {
             )) : (
                 <div className={styles.emptyState}>
                     <h2>You have no Liked songs so far</h2>
-                </div>
-            )}
-        </div>
-
-        {/* Recommendations Section - Now with matching styling */}
-        <div className={styles.homeSongsContainer}>
-            <h2>Recommended Songs</h2>
-            <hr className={styles.divider} />
-            {loading ? (
-                <div className={styles.loadingState}>
-                    <p>Loading recommendations...</p>
-                </div>
-            ) : recommendations.length > 0 ? (
-                recommendations.map((song, index) => (
-                    <div key={song._id} className={styles.songItem}>
-                        <div className={styles.songInfo}>
-                            <div className={styles.songIndex}>{index + 1}</div>
-                            <img src={song.albumCover} alt="" className={styles.songAlbumCover} />
-                            <div className={styles.songDetails}>
-                                <strong className={styles.songName}>{song.name}</strong>
-                                <p className={styles.songArtist}>{song.artist}</p>
-                            </div>
-                        </div>
-
-                        <i 
-                            className={`fa-solid ${currentSongData.isPlaying && currentSongData._id === song._id ? "fa-pause" : "fa-play"} ${styles.playButton}`}
-                            onClick={() => playSong(song, recommendations)} 
-                        />
-                    </div>
-                ))
-            ) : (
-                <div className={styles.emptyState}>
-                    <p>No recommendations available</p>
                 </div>
             )}
         </div>
