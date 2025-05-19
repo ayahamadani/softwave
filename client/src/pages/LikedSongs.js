@@ -1,5 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
-import BottomPlayer from '../components/BottomPlayer/BottomPlayer';
+import { useEffect, useContext } from 'react';
 import SongContext from '../components/context/SongContext';
 import axios from "axios";
 import styles from "../components/assets/likedSongs.module.css";
@@ -12,8 +11,6 @@ export default function LikedSongs() {
         likedSongsFront,
         setLikedSongsFront
     } = useContext(SongContext);
-    const [recommendations, setRecommendations] = useState([]);
-    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const user = JSON.parse(localStorage.getItem("user"));
