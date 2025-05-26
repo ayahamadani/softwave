@@ -8,6 +8,7 @@ const rootRouter = require('./routes');
 
 // const songsRoute = require('./routes/songs');
 
+const app = express();
 const PORT = process.env.PORT || 5000;
 
 //Load env vars
@@ -17,9 +18,11 @@ dotenv.config({ path: './config/config.env' });
 connectDB();
 
 // Route files
-const app = express();
-
-app.use(cors());
+app.use(cors({
+  origin: 'http://softwave-bucket.s3-website.eu-north-1.amazonaws.com',
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  credentials: true
+}));    
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
