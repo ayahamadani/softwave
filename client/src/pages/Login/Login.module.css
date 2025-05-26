@@ -54,6 +54,7 @@
     align-items: center;
     width: 100%;
     justify-content: flex-end;
+    flex-direction: column;
 }
 
 .signUpOptionContainer a{
@@ -72,4 +73,10 @@ form {
 
 .title {
     margin: 2em;
+}
+
+.bottomRight {
+    display: flex;
+    justify-content: end;
+    width: 100%;
 }

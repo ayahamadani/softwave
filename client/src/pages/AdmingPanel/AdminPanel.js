@@ -111,6 +111,17 @@ export default function AdminPanel() {
           console.error("Error toggling Adminship", err);
       }
     }
+    const deleteUser = async (userId) => {
+    try {
+      await axios.delete(`http://localhost:5000/auth/${userId}`);
+      // Remove the deleted user from state to update UI
+      setUsers(prevUsers => prevUsers.filter(user => user._id !== userId));
+      setFilteredUsers(prevUsers => prevUsers.filter(user => user._id !== userId));
+    } catch (err) {
+      console.error("Error deleting user:", err.response?.data || err.message);
+    }
+  };
+
 
   
   return (
@@ -186,12 +197,20 @@ export default function AdminPanel() {
                   <img src={user.icon} alt="user-icon" className={styles.userIcon} />
                   <h3 className={styles.userName}>{user.username}</h3>
                   <p className={styles.userRole}>{user.isAdmin ? "Admin" : "Normal"} User</p>
-                  <button
+                  <div style={{display: "flex", justifyContent: "center", flexDirection: "column", gap: "1em"}}>
+                    <button
                     onClick={() => toggleAdmin(user._id)} 
                     className={styles.adminToggleButton}
                   >
                     {user.isAdmin ? "Remove Admin" : "Make Admin"}
                   </button>
+                  <button
+                  onClick={() => deleteUser(user._id)}
+                    className={styles.adminToggleButton}
+                  >
+                    Delete User
+                  </button>
+                  </div>
                 </div>
               ))}
             </div>

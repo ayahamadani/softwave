@@ -191,7 +191,7 @@ export default function BottomPlayer() {
                   />
                 )}
               </div>
-              <div className="mr1">
+              <div className={styles.mr1}>
                 <input
                   className={styles.volumeInput}
                   type="range"
@@ -206,7 +206,7 @@ export default function BottomPlayer() {
             </div>
             {showDropdown && (
               <div className={styles.bottomDropDownMenu} ref={dropdownRef}>
-                <div className={styles.dropdownItem} onClick={fetchUserPlaylists}>Add To Existing Playlist</div>                
+                <div className={styles.dropdownItem} onClick={() =>{ fetchUserPlaylists(); setShowDropdown(false)}}>Add To Existing Playlist</div>                
                 <div
                   className={styles.dropdownItem}
                   style={{ color: "purple" }}

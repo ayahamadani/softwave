@@ -9,7 +9,7 @@ export default function PlaylistDetail() {
   const [playlistSongs, setPlaylistSongs] = useState(null);
   const [playlist, setPlaylist] = useState(null);
   const fileInputRef = useRef();
-  const { currentSongData, playSong, likedSongsFront } = useContext(SongContext);
+  const { currentSongData, playSong, likedSongsFront, setCurrentQueue } = useContext(SongContext);
 
   useEffect(() => {
     const fetchPlaylist = async () => {
@@ -48,12 +48,27 @@ export default function PlaylistDetail() {
         formData,
         { headers: { "Content-Type": "multipart/form-data" } }
       );
+
       setPlaylist(response.data.playlist);
     } catch (error) {
       console.error("Upload failed:", error);
       alert("Failed to upload playlist cover");
     }
   };
+
+  const handleRemoveSong = async (songId) => {
+  try {
+    await axios.put(
+      `http://localhost:5000/playlists/${playlist._id}/remove`,
+      { songId }
+    );
+
+    setPlaylistSongs(prevSongs => prevSongs.filter(song => song._id !== songId));
+  } catch (err) {
+    console.error("Failed to remove song:", err);
+    alert("Failed to remove the song from the playlist.");
+  }
+};
 
   return (
     <div className={styles.playlistDetailContainer}>
@@ -108,6 +123,7 @@ export default function PlaylistDetail() {
                 <div className={styles.songArtist}>{song.artist}</div>
               </div>
             </div>
+            <i className="fa-solid fa-trash" style={{color: "#9b59b6", paddingRight: "0.5em", cursor: "pointer"}} onClick={() => handleRemoveSong(song._id)}></i>
             <button 
               className={styles.playButton}
               onClick={() => playSong(song, playlistSongs)}

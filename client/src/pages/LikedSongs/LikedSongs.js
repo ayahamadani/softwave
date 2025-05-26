@@ -36,7 +36,7 @@ export default function LikedSongs() {
         };
 
         fetchLikedSongs();
-    }, [searchQuery, setLikedSongsFront]);
+    }, [searchQuery, setLikedSongsFront, currentSongData]);
 
 
     return (

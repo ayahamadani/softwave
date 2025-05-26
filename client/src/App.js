@@ -17,6 +17,8 @@ import PlaylistDetail from './pages/IndividualPlaylist/PlaylistDetail';
 import { BrowserRouter as Router, Routes, Route, useLocation  } from "react-router-dom";
 import { AuthModalProvider } from './components/context/AuthModalContext';
 import AuthModal from './components/AuthModal/AuthModal';
+import ForgotPassword from './pages/ForgotPassword/ForgotPassword';
+import ResetPassword from './components/ResetPassword';
 
 function App() {
   const [currentSongData, setCurrentSongData] = useState({});
@@ -370,6 +372,8 @@ const rewindSong = useCallback((song) => {
       ) : (
         <>
           <Routes>
+            <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/reset-password/:token" element={<ResetPassword />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/" element={<Home />} />

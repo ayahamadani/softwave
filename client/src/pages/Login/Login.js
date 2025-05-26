@@ -44,7 +44,7 @@ export default function Login() {
     setError(null);
 
     try {
-      const response = await fetch("https://softwave-music-player.onrender.com/auth/login", {
+      const response = await fetch("http://localhost:5000/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
@@ -88,8 +88,15 @@ export default function Login() {
         </form>
 
         <div className={styles.signUpOptionContainer}>
-          <p>don't have an account?</p>
-          <Link to="/signup">Sign up!</Link>
+          <div className={styles.bottomRight}>
+            <p>don't have an account?</p>
+            <Link to="/signup">Sign up!</Link>
+          </div>
+          <div className={styles.bottomRight}>
+            <p style={{ marginTop: "10px" }}>
+            <Link to="/forgot-password">Forgot password?</Link>
+            </p>
+          </div>
         </div>
       </div>
     </div>

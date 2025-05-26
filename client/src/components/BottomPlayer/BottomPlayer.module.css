@@ -504,9 +504,15 @@
   font-family: monospace; /* For consistent width of time display */
 }
 
+.mr1 {
+  display: flex;
+  align-items: center;
+}
+
 /* Fallback for browsers that don't support pseudo-elements on range inputs */
 /* .progressBar {
   background: linear-gradient(to right, #9b59b6 var(--progress, 0%), #535353 var(--progress, 0%);
   background-repeat: no-repeat;
   border-radius: 2px;
 } */
+
