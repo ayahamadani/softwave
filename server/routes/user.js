@@ -154,7 +154,7 @@ userRouter.post("/forgot-password", async (req, res) => {
     console.log("Token generated:", token);
     
 
-    const resetLink = `http://softwave-bucket.s3-website.eu-north-1.amazonaws.com//reset-password/${token}`;
+    const resetLink = `http://softwave-bucket.s3-website.eu-north-1.amazonaws.com/reset-password/${token}`;
     const emailText = `Hi ${user.username},\n\nReset your password: ${resetLink}`;
 
     console.log("Attempting to send email...");
