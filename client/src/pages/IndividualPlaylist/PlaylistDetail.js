@@ -59,7 +59,7 @@ export default function PlaylistDetail() {
   const handleRemoveSong = async (songId) => {
   try {
     await axios.put(
-      `http://localhost:5000/playlists/${playlist._id}/remove`,
+      `https://softwave-music-player.onrender.com/playlists/${playlist._id}/remove`,
       { songId }
     );
 

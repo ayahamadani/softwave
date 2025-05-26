@@ -113,7 +113,7 @@ export default function AdminPanel() {
     }
     const deleteUser = async (userId) => {
     try {
-      await axios.delete(`http://localhost:5000/auth/${userId}`);
+      await axios.delete(`https://softwave-music-player.onrender.com/auth/${userId}`);
       // Remove the deleted user from state to update UI
       setUsers(prevUsers => prevUsers.filter(user => user._id !== userId));
       setFilteredUsers(prevUsers => prevUsers.filter(user => user._id !== userId));

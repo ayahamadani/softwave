@@ -26,7 +26,7 @@ export default function Playlists() {
 
   try {
     const user = JSON.parse(localStorage.getItem("user"));
-    await axios.delete(`http://localhost:5000/playlists/${user.userId}/${playlistId}`);
+    await axios.delete(`https://softwave-music-player.onrender.com/${user.userId}/${playlistId}`);
     
     // Refresh playlist state
     setPlaylists(prev => prev.filter(pl => pl._id !== playlistId));
