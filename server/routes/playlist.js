@@ -51,6 +51,48 @@ playlistRouter.put("/:playlistId/add", async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 });
+
+// PUT /playlists/:playlistId/remove
+playlistRouter.put("/:playlistId/remove", async (req, res) => {
+  const { songId } = req.body;
+
+  if (!songId) {
+    return res.status(400).json({ error: "songId is required" });
+  }
+
+  try {
+    const playlist = await Playlist.findById(req.params.playlistId);
+    if (!playlist) {
+      return res.status(404).json({ error: "Playlist not found" });
+    }
+
+    // Remove the song from the playlist
+    playlist.songs = playlist.songs.filter(id => id.toString() !== songId);
+    await playlist.save();
+
+    // Populate the updated songs list
+    const updatedPlaylist = await Playlist.findById(req.params.playlistId).populate('songs');
+    res.json(updatedPlaylist);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// DELETE /playlists/:userId/:playlistId
+playlistRouter.delete("/:userId/:playlistId", async (req, res) => {
+  const { userId, playlistId } = req.params;
+
+  try {
+    const playlist = await Playlist.findOneAndDelete({ _id: playlistId, user: userId });
+    if (!playlist) return res.status(404).json({ error: "Playlist not found" });
+
+    res.json({ message: "Playlist deleted successfully" });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+
   
 // GET /playlists/user/:userId
 playlistRouter.get('/user/:userId', async (req, res) => {

@@ -6,7 +6,8 @@ const { body, validationResult } = require('express-validator');
 const userRouter = express.Router();
 const User = require("../models/user");
 const AWS = require('aws-sdk');
-
+const sendEmail = require("../util/sendEmail");
+const { JWT_SECRET } = require("../secrets");
 dotenv.config({ path: "../config/config.env" });
 
 // Adding a user
@@ -66,7 +67,8 @@ userRouter.post("/login", async (req, res) => {
     try {
         const { username, password } = req.body;
 
-        const user = await User.findOne({username: username.toLowerCase()});
+        // Find user with case-insensitive username
+        const user = await User.findOne({ username: { $regex: new RegExp(`^${username}$`, 'i') } });
 
         if (!user) {
             return res.status(404).json({ message: "user not found" });
@@ -81,13 +83,12 @@ userRouter.post("/login", async (req, res) => {
         const isAdmin = user.isAdmin;
         const userId = user._id;
         const icon = user.icon;
-        res.status(200).json({username, isAdmin, userId, icon});
+        res.status(200).json({ username: user.username, isAdmin, userId, icon });
 
     } catch (error) {
         console.error(error);
         return res.status(500).json({ message: 'Server error', error });
     }
-
 });
 
 // Getting all users
@@ -125,6 +126,87 @@ userRouter.put("/:userId/makeAdmin", async (req, res) => {
         console.error(err);
         return res.status(500).json({ message: "Server Error" });
     }
+});
+
+userRouter.post("/forgot-password", async (req, res) => {
+  const { email } = req.body;
+  console.log("Forgot password request for:", email); // Log the incoming email
+
+  try {
+    const user = await User.findOne({ email });
+    if (!user) {
+      console.log("Email not found in database");
+      return res.status(404).json({ message: "Email not found" });
+    }
+
+    console.log("User found:", user._id);
+    console.log("JWT_SECRET:", process.env.JWT_SECRET)
+    
+    if (!JWT_SECRET) {
+      throw new Error("JWT_SECRET is not configured");
+    }
+
+    const token = jwt.sign(
+      { userId: user._id },
+      JWT_SECRET,
+      { expiresIn: "15m" }
+    );
+    console.log("Token generated:", token);
+    
+
+    const resetLink = `http://localhost:3000/reset-password/${token}`;
+    const emailText = `Hi ${user.username},\n\nReset your password: ${resetLink}`;
+
+    console.log("Attempting to send email...");
+    await sendEmail(user.email, "Password Reset", emailText);
+    console.log("Email sent successfully");
+
+    res.status(200).json({ message: "Password reset link sent to your email." });
+
+  } catch (err) {
+    console.error("Full error:", err);
+    res.status(500).json({ 
+      message: "Failed to send reset link.",
+      error: err.message // Include the actual error message
+    });
+  }
+});
+
+userRouter.post("/reset-password/:token", async (req, res) => {
+  const { token } = req.params;
+  const { password } = req.body;
+
+  try {
+    const decoded = jwt.verify(token, JWT_SECRET);
+    const userId = decoded.userId;
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+    await User.findByIdAndUpdate(userId, { password: hashedPassword });
+
+    res.status(200).json({ message: "Password reset successful." });
+
+  } catch (err) {
+    console.error(err);
+    res.status(400).json({ message: "Invalid or expired token." });
+  }
+});
+
+// DELETE /auth/:userId 
+userRouter.delete('/:userId', async (req, res) => {
+  const { userId } = req.params;
+
+  try {
+    const deletedUser = await User.findByIdAndDelete(userId);
+
+    if (!deletedUser) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.status(200).json({ message: "User deleted successfully" });
+  } catch (err) {
+    console.error("Error deleting user:", err);
+    res.status(500).json({ message: "Server error" });
+  }
 });
 
 module.exports = userRouter;
